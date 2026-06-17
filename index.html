@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Bootstrap Tycoon — 8-bit</title>
-<meta name="description" content="An 8-bit startup tycoon: pick your founder, survive 3 years, sell for $48M or hit $5M/mo.">
+<meta name="description" content="An 8-bit startup tycoon: pick your founder, ask your AI co-founder, sell for $48M or hit $5M/mo.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
@@ -40,11 +40,9 @@
   .choice{font-family:'VT323';font-size:22px;text-align:left;color:var(--ink);background:var(--panel);border:3px solid var(--edge);padding:12px 13px;cursor:pointer;display:flex;gap:10px;align-items:baseline;min-height:50px}
   .choice .k{font-family:'Press Start 2P';font-size:11px;color:var(--mint)}
   .choice:hover{background:var(--mint);color:#04120c;border-color:var(--mint2)}.choice:hover .k{color:#04120c}.choice:active{transform:translateY(2px)}
-  /* founder/difficulty cards */
   .card{background:var(--panel);border:3px solid var(--edge);padding:11px;cursor:pointer;margin-bottom:9px}
   .card:hover{border-color:var(--mint)}.card:active{transform:translateY(2px)}
   .card .ct{font-family:'Press Start 2P';font-size:10px;color:var(--mint2);display:flex;gap:8px;align-items:center}
-  .card .cr{font-size:16px;color:var(--gold);margin:2px 0 5px}
   .card .sk{font-size:18px;color:var(--mint2);line-height:1.05}.card .fl{font-size:18px;color:var(--red);line-height:1.05;margin-top:2px}
   .out-card{border:3px solid;padding:13px;background:#070c18;margin:0 0 4px}
   .out-card.good{border-color:var(--mint)}.out-card.bad{border-color:var(--red)}.out-card.mile{border-color:var(--gold);animation:pulse 1s steps(3) infinite}
@@ -60,18 +58,29 @@
   .btn.run{background:var(--gold);box-shadow:0 6px 0 #b78f10;color:#231800}.btn.run:hover{background:#ffe27a}.btn.run:active{box-shadow:0 1px 0 #b78f10}
   #base{padding:14px}
   .base-h{font-family:'Press Start 2P';font-size:12px;color:var(--mint2);text-align:center;margin-bottom:4px}
-  .base-sub{font-size:18px;color:var(--dim);text-align:center;margin-bottom:12px}
-  .shop-cat{font-family:'Press Start 2P';font-size:9px;color:var(--gold);margin:14px 0 7px;border-bottom:2px solid var(--edge);padding-bottom:5px}
+  .base-sub{font-size:18px;color:var(--dim);text-align:center;margin-bottom:10px}
+  .pnl{background:#070c18;border:3px solid var(--edge);padding:10px 11px;margin-bottom:10px}
+  .pnl-h{font-family:'Press Start 2P';font-size:8.5px;color:var(--gold);margin-bottom:7px}
+  .pnl-r{display:flex;justify-content:space-between;font-size:19px;line-height:1.25}
+  .pnl-r span:first-child{color:var(--dim)}
+  .pnl-r.tot{font-family:'Press Start 2P';font-size:10px;border-top:2px solid var(--edge);margin-top:5px;padding-top:6px}
+  .pnl-r .up{color:var(--mint2)}.pnl-r .down{color:var(--red)}
+  .pnl-run{font-size:17px;margin-top:7px;color:var(--mint2)}.pnl-run.warn{color:var(--gold)}.pnl-run.bad{color:var(--red)}
+  .aria-cta{font-family:'Press Start 2P';font-size:9px;color:#1a1030;background:var(--violet);border:none;width:100%;padding:12px;cursor:pointer;margin-bottom:12px;box-shadow:0 5px 0 #6b4ba8;min-height:46px}
+  .aria-cta:active{transform:translateY(4px);box-shadow:0 1px 0 #6b4ba8}
+  .shop-cat{font-family:'Press Start 2P';font-size:9px;color:var(--gold);margin:14px 0 7px;border-bottom:2px solid var(--edge);padding-bottom:5px;display:flex;justify-content:space-between}
+  .shop-cat .cap{color:var(--violet);font-size:8px}
   .shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .item{background:var(--panel);border:3px solid var(--edge);padding:9px;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-height:78px}
+  .item{background:var(--panel);border:3px solid var(--edge);padding:9px;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-height:84px}
   .item:hover{border-color:var(--mint)}.item:active{transform:translateY(2px)}
   .item.owned{border-color:var(--mint);background:#0f2a20;cursor:default}.item.cant{opacity:.42;cursor:not-allowed}
   .item .nm{font-family:'Press Start 2P';font-size:8.5px;color:var(--ink);display:flex;gap:5px;align-items:center;line-height:1.4}
   .item .ds{font-size:16px;color:var(--dim);line-height:1}
-  .item .cost{font-family:'Press Start 2P';font-size:8px;color:var(--gold);margin-top:auto}.item.owned .cost{color:var(--mint2)}
+  .item .cost{font-family:'Press Start 2P';font-size:7.5px;color:var(--gold);margin-top:auto;line-height:1.4}.item.owned .cost{color:var(--mint2)}.item .cost .mo{color:var(--red)}
   .advisor{font-size:18px;color:var(--violet);background:#120e26;border:2px solid #2a2150;padding:8px 10px;margin-top:12px;line-height:1.1}
-  footer{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 12px;background:#080d1a;border-top:4px solid var(--edge);font-family:'Press Start 2P';font-size:8px;color:var(--dim)}
+  footer{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:9px 10px;background:#080d1a;border-top:4px solid var(--edge);font-family:'Press Start 2P';font-size:8px;color:var(--dim);flex-wrap:wrap}
   footer button{font-family:'Press Start 2P';font-size:8px;color:var(--dim);background:#0e1730;border:2px solid var(--edge);padding:7px 8px;cursor:pointer}footer button:active{transform:translateY(1px)}
+  footer #aiBtn{color:var(--violet);border-color:#3a2e63}
   .overlay{position:absolute;inset:0;background:rgba(5,7,15,.97);z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px}
   .hidden{display:none}
   #title h1{font-family:'Press Start 2P';font-size:26px;color:var(--mint2);line-height:1.45;text-shadow:0 5px 0 #0c7a51}
@@ -80,7 +89,6 @@
   #title .blurb{font-size:20px;color:var(--dim);max-width:540px;margin:4px auto 0;line-height:1.15}
   .blink{animation:blink 1s steps(2) infinite}@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
   #start{font-family:'Press Start 2P';font-size:15px;color:var(--mint2);margin-top:24px;border:3px solid var(--mint);padding:14px 20px}
-  /* celebration */
   #celebrate{z-index:55;background:rgba(5,9,20,.92)}
   #celIcon{font-size:74px;animation:pop .5s steps(3);filter:drop-shadow(0 0 18px rgba(255,210,63,.7))}
   @keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
@@ -89,6 +97,20 @@
   .cf-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none}
   .cf{position:absolute;width:9px;height:9px;top:-14px;animation:fall linear forwards}
   @keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+  /* ARIA chat */
+  #aria{z-index:58;background:rgba(4,7,16,.96);justify-content:flex-start;padding:14px}
+  .aria-h{font-family:'Press Start 2P';font-size:12px;color:var(--violet);margin:6px 0 10px;text-shadow:0 3px 0 #2a1c4a}
+  .aria-log{width:100%;max-width:600px;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px}
+  .amsg{padding:9px 11px;border:2px solid;font-size:19px;line-height:1.18;white-space:pre-wrap;text-align:left;max-width:90%}
+  .amsg.bot{align-self:flex-start;border-color:#3a2e63;background:#140f28;color:var(--ink)}
+  .amsg.bot b{color:var(--violet)}
+  .amsg.user{align-self:flex-end;border-color:var(--mint);background:#0f2a20;color:var(--mint2)}
+  .aria-q{width:100%;max-width:600px;display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .aq{font-family:'VT323';font-size:18px;color:var(--violet);background:#140f28;border:2px solid #3a2e63;padding:8px 10px;cursor:pointer}
+  .aq:active{transform:translateY(1px)}
+  .aria-input{width:100%;max-width:600px;display:flex;gap:6px}
+  .aria-input input{flex:1;font-family:'VT323';font-size:20px;background:#0a0f1e;border:2px solid var(--edge);color:var(--ink);padding:9px 11px}
+  .aria-input button{font-family:'Press Start 2P';font-size:11px;background:var(--violet);color:#1a1030;border:none;padding:0 14px;cursor:pointer}
   #ending h2{font-family:'Press Start 2P';font-size:17px;line-height:1.5}
   #ending .score{font-size:21px;color:var(--ink);margin-top:13px;line-height:1.3;max-width:600px}
   #ending .lesson{font-family:'Press Start 2P';font-size:9.5px;color:var(--gold);margin-top:16px;line-height:1.7;max-width:620px}
@@ -108,13 +130,13 @@
     <div class="out-card" id="outCard"><div class="out-tag" id="outTag"></div><div id="outText"></div><div class="delta-row" id="deltas"></div></div>
     <button class="btn" id="fwdBtn">▶ MOVE FORWARD</button>
   </div>
-  <footer><span>♥ INDIE SAAS · 8-BIT</span><span><button id="musBtn">🎵 ON</button> <button id="sndBtn">🔊 ON</button> <button id="restartBtn">⟲ RESTART</button></span></footer>
+  <footer><span>♥ 8-BIT</span><span><button id="aiBtn">🤖 AI</button> <button id="musBtn">🎵 ON</button> <button id="sndBtn">🔊 ON</button> <button id="restartBtn">⟲</button></span></footer>
 
   <div class="overlay" id="title">
     <h1>BOOTSTRAP<br>TYCOON</h1>
     <div class="sub">▚ AN 8-BIT STARTUP TYCOON ▞</div>
     <div class="crew">🔮🧮🎨📋</div>
-    <div class="blurb">Pick your founder. Pick your difficulty. Survive the summer, then scale for 3 brutal years — hire, upgrade, fight rivals & buyers. Win by selling for <b style="color:#ffd23f">$48M</b> — or reaching <b style="color:#ffd23f">$5M / month</b>.</div>
+    <div class="blurb">Pick your founder. Pick your difficulty. Survive the summer, then scale for 3 brutal years — hire, upgrade, fight rivals & buyers. Ask your <b style="color:#b48cff">AI co-founder</b> when you're stuck. Win by selling for <b style="color:#ffd23f">$48M</b> — or reaching <b style="color:#ffd23f">$5M / month</b>.</div>
     <div id="start" class="blink">▶ PRESS START / TAP</div>
   </div>
 
@@ -122,6 +144,14 @@
     <div class="cf-wrap" id="confetti"></div>
     <div id="celIcon">🎉</div><div id="celTitle"></div><div id="celSub"></div>
     <button class="btn" style="max-width:300px" id="celBtn">▶ CONTINUE</button>
+  </div>
+
+  <div class="overlay hidden" id="aria">
+    <div class="aria-h">🤖 ARIA — your AI co-founder</div>
+    <div class="aria-log" id="ariaLog"></div>
+    <div class="aria-q" id="ariaQ"></div>
+    <div class="aria-input"><input id="ariaIn" placeholder="ask anything…" autocomplete="off"><button id="ariaSend">▶</button></div>
+    <button class="btn" style="max-width:600px;margin-top:8px" id="ariaClose">✕ CLOSE</button>
   </div>
 
   <div class="overlay hidden" id="ending">
@@ -138,7 +168,7 @@ let AC=null,soundOn=true;
 function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return AC;}
 function tone(f,s,d,t,v){if(!soundOn||!ac())return;if(typeof duck==='function')duck();const a=AC.currentTime+s,o=AC.createOscillator(),g=AC.createGain();o.type=t||'square';o.frequency.value=f;g.gain.setValueAtTime(.0001,a);g.gain.exponentialRampToValueAtTime((v||.12)*1.4,a+.01);g.gain.exponentialRampToValueAtTime(.0001,a+d);o.connect(g);g.connect(AC.destination);o.start(a);o.stop(a+d+.02);}
 const sfx={click:()=>tone(330,0,.06),buy:()=>[523,784].forEach((f,i)=>tone(f,i*.05,.1)),good:()=>[523,659,784].forEach((f,i)=>tone(f,i*.07,.12)),bad:()=>[392,311,233].forEach((f,i)=>tone(f,i*.08,.16,'sawtooth')),mile:()=>[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*.09,.16,'square',.14)),cash:()=>[784,988,1318].forEach((f,i)=>tone(f,i*.08,.14,'square',.13)),fanfare:()=>[523,659,784,1047,1319,1047,1319,1568].forEach((f,i)=>tone(f,i*.1,.2,'square',.14)),end:()=>[659,523,392,330].forEach((f,i)=>tone(f,i*.12,.22,'triangle',.13))};
-/* ---- background music: procedural 8-bit loop (Am–F–C–G), mixed low ---- */
+/* ---- background music (drums + 8-bar melody, mixed low) ---- */
 let musicOn=true,mGain=null,musTimer=null,musStep=0,musNext=0,noiseBuf=null;
 const MBPM=126,MVOL=0.34,STEPS=64;
 const NF={C2:65.41,E2:82.41,F2:87.31,G2:98,A2:110,B2:123.47,C3:130.81,D3:146.83,E3:164.81,F3:174.61,G3:196,A3:220,B3:246.94,C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,B4:493.88,C5:523.25,D5:587.33};
@@ -161,16 +191,16 @@ function toggleMusic(){musicOn=!musicOn;if(mGain){mGain.gain.cancelScheduledValu
 
 /* ============ DIFFICULTY + FOUNDERS ============ */
 const DIFFS=[
-  {key:'side',name:'SIDE HUSTLE',ds:'Forgiving. Learn the ropes.',growth:1.18,churn:-0.8,cost:.85,offer:1.12,cash:1.35,bad:.8},
+  {key:'side',name:'SIDE HUSTLE',ds:'Forgiving. Learn the ropes.',growth:1.16,churn:-0.8,cost:.86,offer:1.12,cash:1.3,bad:.8},
   {key:'startup',name:'STARTUP',ds:'The real game — balanced & tough.',growth:1.0,churn:0,cost:1.0,offer:1.0,cash:1.0,bad:1.0},
-  {key:'cutthroat',name:'CUTTHROAT',ds:'Funded rivals, brutal churn.',growth:.84,churn:1.3,cost:1.22,offer:.85,cash:.78,bad:1.3},
-  {key:'recession',name:'RECESSION',ds:'Capital is scarce. Survive.',growth:.7,churn:2.4,cost:1.45,offer:.72,cash:.58,bad:1.6},
+  {key:'cutthroat',name:'CUTTHROAT',ds:'Funded rivals, brutal churn.',growth:.83,churn:1.4,cost:1.24,offer:.85,cash:.76,bad:1.3},
+  {key:'recession',name:'RECESSION',ds:'Capital is scarce. Survive.',growth:.7,churn:2.6,cost:1.48,offer:.72,cash:.56,bad:1.6},
 ];
 const FOUNDERS=[
-  {id:'visionary',icon:'🔮',name:'THE VISIONARY',role:'CEO',skill:'Sees the big picture — faster growth, stronger brand, richer buyout offers.',flaw:'Reality distortion — rocky, churny early game and overreach.',growth:1.16,brandMult:1.3,offer:1.18,churnAdd:1.3,earlyVolatile:true},
+  {id:'visionary',icon:'🔮',name:'THE VISIONARY',role:'CEO',skill:'Sees the big picture — faster growth, stronger brand, richer buyout offers.',flaw:'Reality distortion — rocky, churny early game and overreach.',growth:1.15,brandMult:1.3,offer:1.18,churnAdd:1.3,earlyVolatile:true},
   {id:'quant',icon:'🧮',name:'THE OPERATOR',role:'CFO',skill:'Systematic & numbers-driven — low costs, fat margins, investors love you (higher valuation).',flaw:'Risk-averse — grows slower and upgrades cost more to justify.',cost:.76,valMult:1.32,cash:1.3,growth:.85,upgCost:1.22},
-  {id:'builder',icon:'🎨',name:'THE BUILDER',role:'CTO',skill:'Design & tech genius — product soars, churn drops, upgrades are cheaper.',flaw:'Drifts & gets lazy — morale bleeds, with random lost quarters.',productMult:1.55,churnAdd:-1.1,upgCost:.7,moraleDrift:-3,driftRisk:true},
-  {id:'boss',icon:'📋',name:'THE BOSS',role:'COO',skill:'Gets things DONE — more output per quarter, your team punches above its size.',flaw:'Bossy — co-founder fights and friction sap morale, especially early.',execMult:1.32,moraleDrift:-2,conflictRisk:true},
+  {id:'builder',icon:'🎨',name:'THE BUILDER',role:'CTO',skill:'Design & tech genius — product soars, churn drops, upgrades are cheaper.',flaw:'Drifts & gets lazy — morale bleeds, with random lost quarters.',productMult:1.5,churnAdd:-1.1,upgCost:.7,moraleDrift:-3,driftRisk:true},
+  {id:'boss',icon:'📋',name:'THE BOSS',role:'COO',skill:'Gets things DONE — more output per quarter, your team punches above its size.',flaw:'Bossy — co-founder fights and friction sap morale, especially early.',execMult:1.3,moraleDrift:-2,conflictRisk:true},
 ];
 
 /* ============ STATE ============ */
@@ -178,7 +208,7 @@ const START=()=>({phase:'summer',month:0,cash:1500,customers:0,arpu:0,churn:6.5,
   staff:{eng:0,sales:0,support:0,mkt:0},upg:{},equitySold:0,lastGrowth:0,sumIdx:0,q:0,
   leadsBurned:false,oaSigned:false,domainsWarmed:false,offerGood:false,cheapBrand:false,firstTester:false,scope:0,
   lastOfferQ:-9,peakOffer:0,vcTaken:false,diffKey:'startup',founderId:'visionary',celebrated:{},
-  D:DIFFS[1],F:FOUNDERS[0]});
+  curEvent:false,curTip:'',hiddenChurn:0,D:DIFFS[1],F:FOUNDERS[0]});
 let S=START(),screen='title',activeChoices=null,fwd=null,celNext=null;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const mrr=()=>Math.round(S.customers*S.arpu);
@@ -187,6 +217,13 @@ const FM=(k,d)=>{const v=S.F[k];return v==null?d:v;};
 function valuation(){const arr=mrr()*12;let m=(3.6+S.lastGrowth*7-Math.max(0,S.churn-4)*0.32)*FM('valMult',1);m=clamp(m,2.3,13);return Math.round(arr*m);}
 function money(n){n=Math.round(n);const s=n<0?'-':'';n=Math.abs(n);if(n>=1e6)return s+'$'+(n/1e6).toFixed(n>=1e7?0:1)+'M';if(n>=1e3)return s+'$'+(n/1e3).toFixed(n>=1e5?0:1)+'k';return s+'$'+n;}
 function num(n){return Math.round(n).toLocaleString('en-US');}
+/* economics — used by P&L AND runQuarter so they always agree */
+function salariesMo(){return Math.round((S.staff.eng*15000+S.staff.sales*13000+S.staff.support*9500+S.staff.mkt*12000)*S.D.cost*FM('cost',1));}
+function infraMo(){return Math.round(S.customers*(S.upg.automation?2.3:4.0)*S.D.cost*FM('cost',1));}
+function netMo(){return mrr()-salariesMo()-infraMo();}
+function runwayQ(){const n=netMo();if(n>=0)return Infinity;return Math.max(0,Math.floor(S.cash/(-n*3)));}
+function staffCap(){return 3+Math.floor(mrr()/13000);}
+function roleCap(){return Math.max(2,Math.ceil(staffCap()*0.55));}
 
 /* ============ HUD ============ */
 function chip(l,v,c){return `<div class="chip ${c||''}">${l} <b>${v}</b></div>`;}
@@ -197,10 +234,11 @@ function renderHUD(prev){
   hud.innerHTML=cells.map(c=>`<div class="stat" data-k="${c[0]}"><div class="lab"><span>${c[2]}</span><span>${c[1]}</span></div><div class="val">${c[3]}</div></div>`).join('');
   if(prev){[['cash',S.cash-prev.cash],['cust',S.customers-prev.cust],['mrr',mrr()-prev.mrr],['val',valuation()-prev.val]].forEach(([k,d])=>{if(d!==0){const el=hud.querySelector(`[data-k="${k}"]`);if(el)el.classList.add(d>0?'flash-up':'flash-down');}});}
   document.getElementById('chips').innerHTML=[
-    chip('',S.F.icon+S.F.role,'you'), chip('',S.D.name),
+    chip('',S.F.icon+S.F.role,'you'),chip('',S.D.name),
     chip('🛠️',S.product+'%',S.product<50?'warn':''),chip('📣',Math.round(S.brand)+'%'),
     chip('⚡',S.morale,S.morale<30?'bad':S.morale<50?'warn':''),chip('📉',S.churn.toFixed(1)+'%',S.churn>=8?'bad':''),
-    chip('💵',S.arpu?('$'+S.arpu):'—'),chip('👥',totalStaff()?(S.staff.eng+'e/'+S.staff.sales+'s/'+S.staff.support+'su/'+S.staff.mkt+'m'):'0'),
+    chip('💵',S.arpu?('$'+S.arpu):'—'),
+    S.phase==='scale'?chip('👥',totalStaff()+'/'+staffCap()):'',
     S.equitySold>0?chip('🪙',Math.round(S.equitySold*100)+'% sold','warn'):''
   ].join('');
   document.getElementById('goalbar').style.display=S.phase==='summer'?'none':'block';
@@ -214,7 +252,7 @@ function fx(o){const lab=[],map={cash:'💰',product:'🛠️',morale:'⚡',bran
   return lab;}
 function showScene(){document.getElementById('scene').classList.remove('hidden');document.getElementById('base').classList.add('hidden');document.getElementById('outwrap').classList.add('hidden');}
 function showBase(){document.getElementById('base').classList.remove('hidden');document.getElementById('scene').classList.add('hidden');document.getElementById('outwrap').classList.add('hidden');}
-function showOut(out,next){screen='outcome';fwd=next;const cls=out.mile?'mile':(out.ok?'good':'bad');
+function showOut(out,next){screen='outcome';fwd=next;S.curEvent=false;const cls=out.mile?'mile':(out.ok?'good':'bad');
   document.getElementById('outCard').className='out-card '+cls;const tag=document.getElementById('outTag');tag.className='out-tag '+cls;tag.textContent=(cls==='mile'?'★ ':'')+out.tag+(cls==='mile'?' ★':'');
   document.getElementById('outText').innerHTML=`<div class="scene-title" style="font-size:11px;margin-bottom:8px;color:${cls==='bad'?'var(--red)':cls==='mile'?'var(--gold)':'var(--mint2)'}">${out.title}</div>`+out.text;
   document.getElementById('deltas').innerHTML=(out.d||[]).join('');
@@ -225,21 +263,22 @@ function showOut(out,next){screen='outcome';fwd=next;const cls=out.mile?'mile':(
 function renderBeat(b){screen='scene';activeChoices=typeof b.choices==='function'?b.choices():b.choices;
   document.getElementById('scene').innerHTML=`<div class="sprite-screen"><div class="spr">${b.spr}</div><div><div class="scene-title">${b.title}</div><div class="scene-sub">${b.sub||''}</div></div></div><div id="sceneText">${typeof b.text==='function'?b.text():b.text}</div><div class="choices">`+activeChoices.map((c,i)=>`<button class="choice" data-i="${i}"><span class="k">${i+1}</span><span>${c.label}</span></button>`).join('')+`</div>`;
   document.querySelectorAll('#scene .choice').forEach(el=>el.onclick=()=>pickChoice(+el.dataset.i));showScene();renderHUD();}
-function pickChoice(i){if(screen!=='scene')return;sfx.click();const prev=snap();const out=activeChoices[i].go();if(!out||screen==='ending'||screen==='celebrate')return;S.cash=Math.round(S.cash);S.arpu=Math.round(S.arpu);renderHUD(prev);out.d=out.d||[];showOut(out,out._next||afterBeat);}
+function pickChoice(i){if(screen!=='scene')return;sfx.click();const prev=snap();const out=activeChoices[i].go();if(!out||screen==='ending'||screen==='celebrate')return;
+  if(out._step2){S.cash=Math.round(S.cash);renderHUD(prev);return renderBeat(out._step2);}
+  S.cash=Math.round(S.cash);S.arpu=Math.round(S.arpu);renderHUD(prev);out.d=out.d||[];showOut(out,out._next||afterBeat);}
 
 /* ============ CELEBRATIONS ============ */
 const CFCOLORS=['#34e2a0','#ffd23f','#ff4d6d','#54b6ff','#b48cff','#ffffff'];
 function spawnConfetti(id){const w=document.getElementById(id);if(!w)return;let h='';for(let i=0;i<48;i++){const l=Math.floor(Math.random()*100),dur=(1.8+Math.random()*2.4).toFixed(2),del=(Math.random()*0.7).toFixed(2),c=CFCOLORS[i%CFCOLORS.length],sz=6+Math.floor(Math.random()*7);h+=`<div class="cf" style="left:${l}%;width:${sz}px;height:${sz}px;background:${c};animation-duration:${dur}s;animation-delay:${del}s"></div>`;}w.innerHTML=h;}
 function clearConfetti(id){const w=document.getElementById(id);if(w)w.innerHTML='';}
 function celebrate(icon,title,sub,next){screen='celebrate';celNext=next;document.getElementById('celebrate').classList.remove('hidden');
-  document.getElementById('celIcon').textContent=icon;document.getElementById('celTitle').textContent=title;document.getElementById('celSub').textContent=sub;
-  spawnConfetti('confetti');sfx.fanfare();}
+  document.getElementById('celIcon').textContent=icon;document.getElementById('celTitle').textContent=title;document.getElementById('celSub').textContent=sub;spawnConfetti('confetti');sfx.fanfare();}
 function celContinue(){if(screen!=='celebrate')return;document.getElementById('celebrate').classList.add('hidden');clearConfetti('confetti');const f=celNext;celNext=null;if(f)f();}
 const MILES=[
   {id:'p100k',req:()=>mrr()>=100000,icon:'🎉',title:'$100K / MONTH!',sub:'Six figures of MRR. You are a real company now.'},
   {id:'val10',req:()=>valuation()>=10000000,icon:'💎',title:'$10M VALUATION!',sub:'Eight figures. The big leagues are in sight.'},
-  {id:'p500k',req:()=>mrr()>=500000,icon:'🚀',title:'$500K / MONTH!',sub:'Half a million a month. The growth flywheel is spinning.'},
-  {id:'val50',req:()=>valuation()>=50000000,icon:'🏰',title:'$48M+ VALUATION!',sub:'Acquirers want you badly. Hold for the right term sheet.'},
+  {id:'p500k',req:()=>mrr()>=500000,icon:'🚀',title:'$500K / MONTH!',sub:'Half a million a month. The flywheel is spinning.'},
+  {id:'val50',req:()=>valuation()>=48000000,icon:'🏰',title:'$48M+ VALUATION!',sub:'Acquirers want you badly. Hold for the right term sheet.'},
   {id:'p1m',req:()=>mrr()>=1000000,icon:'👑',title:'$1M / MONTH!',sub:'Seven figures monthly. Empire territory.'},
   {id:'p3m',req:()=>mrr()>=3000000,icon:'🏆',title:'$3M / MONTH!',sub:'So close to the $5M dream. Do not let up.'},
 ];
@@ -272,46 +311,58 @@ const SUMMER=[
      {label:'Polish two more weeks first',go:()=>({ok:1,tag:'CAUTIOUS',title:'POLISH PASS',text:`Safer first impression — but validation slips.`,d:fx({product:12,morale:1})})}]},
   {spr:'🚀',title:'LAUNCH PUSH',sub:'Summer ends. Convert the work into customers.',
    text:`Everything funnels into one launch sprint. How hard do you push?`,
-   choices:[{label:'Full-court press — outreach + demos + closing',go:()=>{const base=7+Math.round(S.product/7)+(S.offerGood?8:0)+(S.domainsWarmed?4:0)+(S.firstTester?6:0)-(S.leadsBurned?6:0)-(S.cheapBrand?4:0)+Math.floor(Math.random()*6);const n=Math.max(3,Math.round(base*S.D.growth*FM('growth',1)));S.customers+=n;S.arpu=S.cheapBrand?95:(S.offerGood?175:150);S.churn=clamp(S.churn-(S.offerGood?1:0)+(S.cheapBrand?1.5:0),3,9);const prepay=Math.round(n*S.arpu*5*S.D.cash);S.cash+=prepay;return {ok:1,mile:1,tag:'MILESTONE',title:`LAUNCHED — ${n} CUSTOMERS 💳`,text:`Your machine works. <b>${n} businesses</b> sign on (${money(prepay)} up front). First real revenue!`,d:fx({brand:8,morale:10})};}},
-     {label:'Soft launch — a few hand-picked customers',go:()=>{const n=Math.max(2,Math.round((3+Math.floor(Math.random()*3))*S.D.growth));S.customers+=n;S.arpu=160;S.cash+=Math.round(n*S.arpu*4*S.D.cash);return {ok:1,tag:'STEADY',title:`SOFT LAUNCH — ${n} CUSTOMERS`,text:`A careful start with ${n} happy customers and rock-solid references.`,d:fx({morale:5,product:4})};}}]},
+   choices:[{label:'Full-court press — outreach + demos + closing',go:()=>{const base=6+Math.round(S.product/8)+(S.offerGood?7:0)+(S.domainsWarmed?4:0)+(S.firstTester?6:0)-(S.leadsBurned?6:0)-(S.cheapBrand?4:0)+Math.floor(Math.random()*5);const n=Math.max(3,Math.round(base*S.D.growth*FM('growth',1)));S.customers+=n;S.arpu=S.cheapBrand?90:(S.offerGood?165:140);S.churn=clamp(S.churn-(S.offerGood?1:0)+(S.cheapBrand?1.5:0),3,9);const prepay=Math.round(n*S.arpu*5*S.D.cash);S.cash+=prepay;return {ok:1,mile:1,tag:'MILESTONE',title:`LAUNCHED — ${n} CUSTOMERS 💳`,text:`Your machine works. <b>${n} businesses</b> sign on (${money(prepay)} up front). First real revenue!`,d:fx({brand:8,morale:10})};}},
+     {label:'Soft launch — a few hand-picked customers',go:()=>{const n=Math.max(2,Math.round((3+Math.floor(Math.random()*3))*S.D.growth));S.customers+=n;S.arpu=155;S.cash+=Math.round(n*S.arpu*4*S.D.cash);return {ok:1,tag:'STEADY',title:`SOFT LAUNCH — ${n} CUSTOMERS`,text:`A careful start with ${n} happy customers and rock-solid references.`,d:fx({morale:5,product:4})};}}]},
 ];
 function afterBeat(){S.sumIdx++;S.month+=1;if(S.sumIdx>=SUMMER.length){return enterScaling();}renderBeat(SUMMER[S.sumIdx]);}
 
 /* ============ PHASE 2 — SCALING ============ */
-function enterScaling(){S.phase='scale';S.q=0;S.lastGrowth=0.28;if(S.arpu<120)S.arpu=150;
+function enterScaling(){S.phase='scale';S.q=0;S.lastGrowth=0.24;if(S.arpu<120)S.arpu=145;
   celebrate('💳','FIRST REVENUE!','Summer survived. Now build it into an empire — 3 years on the clock.',()=>{
-    showOut({ok:1,mile:1,tag:'NEW CHAPTER',title:'YEAR 1 BEGINS 🏢',text:`You exit summer with <b>${num(S.customers)} customers</b> and <b>${money(mrr())}/mo</b>. Welcome to your <b>HOME BASE</b> — hire, upgrade, reinvest between every quarter.<br><br>🎯 Win by <b>selling for ≥ $48M</b> or reaching <b>$5M / month.</b>`},()=>renderBase());});}
+    showOut({ok:1,mile:1,tag:'NEW CHAPTER',title:'YEAR 1 BEGINS 🏢',text:`You exit summer with <b>${num(S.customers)} customers</b> and <b>${money(mrr())}/mo</b>. Welcome to your <b>HOME BASE</b> — watch the <b>Monthly P&L</b>, hire within your headcount cap, and reinvest between every quarter. Stuck? Tap <b>🤖 Ask your AI co-founder.</b><br><br>🎯 Win by <b>selling for ≥ $48M</b> or reaching <b>$5M / month.</b>`},()=>renderBase());});}
 const ROLES=[{k:'eng',icon:'👩‍💻',name:'Engineer',base:15000,ds:'+product/qtr, cuts churn'},{k:'sales',icon:'💼',name:'Salesperson',base:13000,ds:'+new customers/qtr'},{k:'support',icon:'🎧',name:'Support Rep',base:9500,ds:'cuts churn, guards morale'},{k:'mkt',icon:'📣',name:'Marketer',base:12000,ds:'+brand & reach'}];
 const hireCost=r=>Math.round(r.base*(1+S.staff[r.k]*0.7)*S.D.cost*FM('cost',1));
+const roleSalary=r=>Math.round(r.base*S.D.cost*FM('cost',1));
+const canHire=r=>totalStaff()<staffCap()&&S.staff[r.k]<roleCap()&&S.cash>=hireCost(r);
 const UPG=[
   {id:'onboarding',icon:'🧭',name:'Guided Onboarding',cost:8000,cat:'🛠️ Product',ds:'-1.0 churn',ap:()=>{S.churn=clamp(S.churn-1,0.6,24);}},
   {id:'mobile',icon:'📱',name:'Mobile App',cost:26000,cat:'🛠️ Product',ds:'-0.8 churn, +brand',ap:()=>{S.churn=clamp(S.churn-0.8,0.6,24);S.brand=clamp(S.brand+8,0,100);}},
-  {id:'ai',icon:'🤖',name:'AI Assistant',cost:62000,cat:'🛠️ Product',need:'mobile',ds:'-1.5 churn, +arpu',ap:()=>{S.churn=clamp(S.churn-1.5,0.6,24);S.arpu=Math.round(S.arpu*1.14);}},
-  {id:'content',icon:'✍️',name:'Content Engine',cost:13000,cat:'📣 Growth',ds:'+steady growth'},
-  {id:'ads',icon:'📺',name:'Paid Ads',cost:32000,cat:'📣 Growth',ds:'+flat new customers/qtr'},
-  {id:'referral',icon:'🤝',name:'Referral Program',cost:52000,cat:'📣 Growth',need:'content',ds:'+compounding growth'},
-  {id:'automation',icon:'⚙️',name:'Ops Automation',cost:38000,cat:'🚀 Scale',ds:'cuts infra cost, +morale',ap:()=>{S.morale=clamp(S.morale+6,0,100);}},
-  {id:'rnd',icon:'🔬',name:'R&D Lab',cost:90000,cat:'🚀 Scale',need:'ai',ds:'unlocks Enterprise'},
-  {id:'enterprise',icon:'🏢',name:'Enterprise Tier',cost:140000,cat:'🚀 Scale',need:'rnd',ds:'BIG +arpu',ap:()=>{S.arpu=Math.round(S.arpu*1.8);}},
-  {id:'intl',icon:'🌍',name:'Go International',cost:180000,cat:'🚀 Scale',need:'enterprise',ds:'+big growth, +infra',ap:()=>{S.brand=clamp(S.brand+10,0,100);}},
+  {id:'ai',icon:'🤖',name:'AI Assistant',cost:64000,cat:'🛠️ Product',need:'mobile',ds:'-1.5 churn, +arpu',ap:()=>{S.churn=clamp(S.churn-1.5,0.6,24);S.arpu=Math.round(S.arpu*1.14);}},
+  {id:'content',icon:'✍️',name:'Content Engine',cost:14000,cat:'📣 Growth',ds:'+steady growth'},
+  {id:'ads',icon:'📺',name:'Paid Ads',cost:34000,cat:'📣 Growth',ds:'+flat new customers/qtr'},
+  {id:'referral',icon:'🤝',name:'Referral Program',cost:54000,cat:'📣 Growth',need:'content',ds:'+compounding growth'},
+  {id:'automation',icon:'⚙️',name:'Ops Automation',cost:40000,cat:'🚀 Scale',ds:'cuts infra cost, +morale',ap:()=>{S.morale=clamp(S.morale+6,0,100);}},
+  {id:'rnd',icon:'🔬',name:'R&D Lab',cost:95000,cat:'🚀 Scale',need:'ai',ds:'unlocks Enterprise'},
+  {id:'enterprise',icon:'🏢',name:'Enterprise Tier',cost:150000,cat:'🚀 Scale',need:'rnd',ds:'BIG +arpu',ap:()=>{S.arpu=Math.round(S.arpu*1.8);}},
+  {id:'intl',icon:'🌍',name:'Go International',cost:190000,cat:'🚀 Scale',need:'enterprise',ds:'+big growth, +infra',ap:()=>{S.brand=clamp(S.brand+10,0,100);}},
 ];
 const owns=id=>!!S.upg[id];
 const upgCost=u=>Math.round(u.cost*S.D.cost*FM('upgCost',1));
 function growthBonus(){let b=0;if(owns('content'))b+=.055;if(owns('ads'))b+=.035;if(owns('referral'))b+=.12;if(owns('intl'))b+=.11;return b;}
 function buyUpg(u){if(owns(u.id)||S.cash<upgCost(u)||(u.need&&!owns(u.need)))return;sfx.buy();S.cash-=upgCost(u);S.upg[u.id]=true;if(u.ap)u.ap();renderBase();}
-function hire(r){const c=hireCost(r);if(S.cash<c)return;sfx.buy();S.cash-=c;S.staff[r.k]++;renderBase();}
+function hire(r){if(!canHire(r))return;sfx.buy();S.cash-=hireCost(r);S.staff[r.k]++;renderBase();}
 function raisePrices(){if(S.arpu<=0)return;sfx.buy();S.arpu=Math.round(S.arpu*1.15);S.churn=clamp(S.churn+1.3,0.6,24);S.brand=clamp(S.brand-3,0,100);renderBase();}
-function renderBase(){screen='base';const yr=1+Math.floor(S.q/4),qq=1+(S.q%4);
+function renderBase(){screen='base';S.curEvent=false;const yr=1+Math.floor(S.q/4),qq=1+(S.q%4);
+  const sal=salariesMo(),inf=infraMo(),net=netMo(),rw=runwayQ();
   let h=`<div class="base-h">🏠 HOME BASE</div><div class="base-sub">Year ${yr} · Q${qq} — reinvest, then run the quarter</div>`;
-  h+=`<div class="shop-cat">👥 HIRE</div><div class="shop-grid">`;
-  ROLES.forEach(r=>{const c=hireCost(r),cant=S.cash<c;h+=`<div class="item ${cant?'cant':''}" data-hire="${r.k}"><div class="nm">${r.icon} ${r.name} <span style="color:var(--dim)">×${S.staff[r.k]}</span></div><div class="ds">${r.ds}</div><div class="cost">HIRE ${money(c)}</div></div>`;});
+  h+=`<div class="pnl"><div class="pnl-h">💵 MONTHLY P&L</div>`+
+     `<div class="pnl-r"><span>Revenue (MRR)</span><span class="up">+${money(mrr())}</span></div>`+
+     `<div class="pnl-r"><span>Salaries · ${totalStaff()} staff</span><span class="down">-${money(sal)}</span></div>`+
+     `<div class="pnl-r"><span>Infra · ${num(S.customers)} cust</span><span class="down">-${money(inf)}</span></div>`+
+     `<div class="pnl-r tot"><span>NET / MONTH</span><span class="${net>=0?'up':'down'}">${net>=0?'+':'-'}${money(Math.abs(net))}</span></div>`+
+     `<div class="pnl-run ${net>=0?'':(rw<=1?'bad':'warn')}">${net>=0?'✅ Profitable — cash is growing each quarter':(rw<=1?'🔴 ':'⚠ ')+'Burning '+money(-net)+'/mo · runway ≈ '+rw+' quarter'+(rw===1?'':'s')}</div></div>`;
+  h+=`<button class="aria-cta" id="ariaCta">🤖 ASK YOUR AI CO-FOUNDER WHAT TO DO</button>`;
+  h+=`<div class="shop-cat"><span>👥 HIRE</span><span class="cap">headcount ${totalStaff()}/${staffCap()}</span></div><div class="shop-grid">`;
+  ROLES.forEach(r=>{const c=hireCost(r),atRole=S.staff[r.k]>=roleCap(),atTotal=totalStaff()>=staffCap(),cant=atRole||atTotal||S.cash<c;
+    const cost=atTotal?'🔒 TEAM AT CAP':atRole?'🔒 ROLE FULL':`HIRE ${money(c)}<br><span class="mo">+${money(roleSalary(r))}/mo</span>`;
+    h+=`<div class="item ${cant?'cant':''}" data-hire="${r.k}"><div class="nm">${r.icon} ${r.name} <span style="color:var(--dim)">×${S.staff[r.k]}</span></div><div class="ds">${r.ds}</div><div class="cost">${cost}</div></div>`;});
   h+=`</div>`;
-  ['🛠️ Product','📣 Growth','🚀 Scale'].forEach(cat=>{h+=`<div class="shop-cat">${cat} UPGRADES</div><div class="shop-grid">`;
+  ['🛠️ Product','📣 Growth','🚀 Scale'].forEach(cat=>{h+=`<div class="shop-cat"><span>${cat} UPGRADES</span><span class="cap">one-time</span></div><div class="shop-grid">`;
     UPG.filter(u=>u.cat===cat).forEach(u=>{const owned=owns(u.id),locked=u.need&&!owns(u.need),cant=!owned&&(S.cash<upgCost(u)||locked);h+=`<div class="item ${owned?'owned':cant?'cant':''}" data-upg="${u.id}"><div class="nm">${u.icon} ${u.name}</div><div class="ds">${u.ds}${locked?' 🔒 needs '+UPG.find(x=>x.id===u.need).name:''}</div><div class="cost">${owned?'✅ OWNED':money(upgCost(u))}</div></div>`;});h+=`</div>`;});
-  h+=`<div class="shop-cat">💵 PRICING</div><div class="shop-grid"><div class="item" data-price="1"><div class="nm">💵 Raise Prices +15%</div><div class="ds">+arpu, +churn, -brand</div><div class="cost">FREE LEVER</div></div></div>`;
-  const tips=['Sales + Marketing compound growth; Support + Product crush churn.','Churn is the silent killer — every point you cut is worth a hire.','Acquisition offers grow with valuation. Patience can pay — or vanish.','Cash sitting idle earns nothing. Reinvest aggressively early.','Your founder\'s flaw will bite — plan around it.'];
-  h+=`<div class="advisor">💡 ${tips[S.q%tips.length]}</div><button class="btn run" id="runBtn">▶ RUN THE QUARTER ▶</button>`;
+  h+=`<div class="shop-cat"><span>💵 PRICING</span></div><div class="shop-grid"><div class="item" data-price="1"><div class="nm">💵 Raise Prices +15%</div><div class="ds">+arpu, +churn, -brand</div><div class="cost">FREE LEVER</div></div></div>`;
+  h+=`<button class="btn run" id="runBtn">▶ RUN THE QUARTER ▶</button>`;
   document.getElementById('base').innerHTML=h;
+  document.getElementById('ariaCta').onclick=openAria;
   document.querySelectorAll('#base [data-hire]').forEach(el=>el.onclick=()=>hire(ROLES.find(r=>r.k===el.dataset.hire)));
   document.querySelectorAll('#base [data-upg]').forEach(el=>el.onclick=()=>buyUpg(UPG.find(u=>u.id===el.dataset.upg)));
   document.querySelectorAll('#base [data-price]').forEach(el=>el.onclick=raisePrices);
@@ -319,21 +370,19 @@ function renderBase(){screen='base';const yr=1+Math.floor(S.q/4),qq=1+(S.q%4);
 
 function runQuarter(){if(screen!=='base')return;sfx.cash();const prev=snap();const before=S.customers;const D=S.D;
   const sat=S.customers>1100?Math.max(0.28,1-(S.customers-1100)/24000):1;
-  let g=(0.034+0.04*S.staff.sales+0.028*S.staff.mkt+0.016*((S.product-50)/10)+S.brand/470+growthBonus())*D.growth*FM('growth',1);
-  if(FM('earlyVolatile',false)&&S.q<4)g+=(Math.random()-0.45)*0.25; // visionary: swingy early
+  let g=(0.032+0.04*S.staff.sales+0.028*S.staff.mkt+0.016*((S.product-50)/10)+S.brand/470+growthBonus())*D.growth*FM('growth',1);
+  if(FM('earlyVolatile',false)&&S.q<4)g+=(Math.random()-0.45)*0.25;
   g=clamp(g,-0.08,1.0)*sat;
   let flat=Math.round((S.staff.sales*7+S.brand*0.8+4+(owns('ads')?38:0)+(owns('intl')?55:0))*D.growth*FM('execMult',1));
   const gained=Math.max(0,Math.round(S.customers*g)+flat);
-  let eChurn=clamp(S.churn-S.product*0.02-S.staff.support*0.42+D.churn+FM('churnAdd',0)+(FM('earlyVolatile',false)&&S.q<4?1.2:0),0.6,28);
+  let eChurn=clamp(S.churn-S.product*0.02-S.staff.support*0.42+D.churn+FM('churnAdd',0)+(FM('earlyVolatile',false)&&S.q<4?1.2:0)+(S.hiddenChurn||0),0.6,28);
   const churned=Math.round(S.customers*eChurn/100*3);
   S.customers=Math.max(0,S.customers+gained-churned);
-  const sal=Math.round((S.staff.eng*15000+S.staff.sales*13000+S.staff.support*9500+S.staff.mkt*12000)*D.cost*FM('cost',1));
-  const infra=Math.round(S.customers*(owns('automation')?2.3:4.0)*D.cost*FM('cost',1));
-  const profitMo=mrr()-sal-infra;S.cash=Math.round(S.cash+profitMo*3);
+  const profitMo=netMo();S.cash=Math.round(S.cash+profitMo*3);
   S.product=clamp(S.product+S.staff.eng*1.2*FM('productMult',1)-0.6,0,100);
   S.brand=clamp(S.brand+S.staff.mkt*1.3*FM('brandMult',1)-1.2,0,100);
   const cap=1+totalStaff()*0.95;S.morale=clamp(S.morale+(S.customers/(cap*240)>1?-6:3)+FM('moraleDrift',0),0,100);
-  S.lastGrowth=before>0?(S.customers-before)/before:0.28;S.q++;
+  S.lastGrowth=before>0?(S.customers-before)/before:0.24;S.q++;
   if(S.cash<-30000)return ending('bankrupt');if(S.morale<=0)return ending('burnout');if(mrr()>=5000000)return ending('empire');
   const rep=[`<div class="delta up">🧑 +${num(gained)} new</div>`,`<div class="delta down">📉 -${num(churned)} churned</div>`,`<div class="delta ${profitMo>=0?'up':'down'}">💰 ${money(profitMo)}/mo ${profitMo>=0?'profit':'burn'}</div>`];
   const net=S.customers-before;
@@ -341,65 +390,140 @@ function runQuarter(){if(screen!=='base')return;sfx.cash();const prev=snap();con
 function proceedAfterQuarter(){const m=nextMilestone();if(m)return celebrate(m.icon,m.title,m.sub,afterQuarterRoute);afterQuarterRoute();}
 function afterQuarterRoute(){if(S.q>=12)return finalReckoning();presentEvent();}
 
-/* ============ EVENTS ============ */
+/* ============ EVENTS (harder, some two-step, some variance) ============ */
+const back=()=>renderBase();
 const EVENTS=[
-  {id:'star',cond:()=>S.cash>40000,spr:'🌟',title:'A STAR ENGINEER',sub:'A 10x builder will join — for a price.',text:()=>`A legendary engineer wants in for <b>${money(45000)}</b> in signing + equity. Worth it?`,
-   choices:[{label:'Pay up — hire the savant',go:()=>{S.staff.eng++;S.equitySold+=0.02;return {ok:1,tag:'BIG HIRE',title:'SHIPPED!',text:`Product velocity doubles overnight.`,d:fx({cash:-45000,product:14})};}},{label:'Pass — too rich for us',go:()=>({ok:1,tag:'FRUGAL',title:'STAYED LEAN',text:`You keep the cash and the cap table.`,d:fx({morale:-2})})}]},
-  {id:'whale',cond:()=>S.product>=55,spr:'🐋',title:'ENTERPRISE WHALE RFP',sub:'A 200-location chain is shopping.',text:()=>`A huge prospect issues an RFP — a massive contract if your product holds up.`,
-   choices:[{label:'Go all-in on the pitch',go:()=>{if(S.product>=70){const n=Math.round(35+S.product);S.customers+=n;S.arpu=Math.round(S.arpu*1.12);return {ok:1,mile:1,tag:'MILESTONE',title:'WHALE LANDED 🐋',text:`You win it — <b>+${num(n)} seats</b> and your ARPU jumps.`,d:fx({brand:10,morale:8})};}return {ok:0,tag:'LOST IT',title:'NOT ENTERPRISE-READY',text:`They grill your security & uptime and walk.`,d:fx({morale:-5,brand:-3})};}},{label:'Decline — stay focused on SMB',go:()=>({ok:1,tag:'FOCUS',title:'KNOW YOUR LANE',text:`No enterprise rabbit hole.`,d:fx({morale:2})})}]},
-  {id:'competitor',spr:'⚔️',title:'A RIVAL UNDERCUTS YOU',sub:'A funded competitor slashes prices 40%.',text:()=>`Your inbox fills with "why are you more expensive?"`,
-   choices:[{label:'Match their price',go:()=>{S.arpu=Math.round(S.arpu*0.78);return {ok:0,tag:'PRICE WAR',title:'RACE DOWN',text:`Churn slows, but you torched margin and signaled weakness.`,d:fx({brand:-2})};}},
-     {label:'Out-build them on quality',go:()=>{if(S.product>=62)return {ok:1,tag:'MOAT',title:'WON ON VALUE',text:`Depth they cannot match. Some of their customers defect to you.`,d:fx({customers:Math.round(S.customers*0.05)+8,brand:5})};return {ok:0,tag:'OUTGUNNED',title:'NOT YET',text:`You are not differentiated enough. You bleed a few.`,d:fx({customers:-Math.round(S.customers*0.05)-4,morale:-3})};}},
-     {label:'Ignore it',go:()=>({ok:0,tag:'GAMBLE',title:'HELD THE LINE',text:`Price-sensitive customers leave anyway.`,d:fx({customers:-Math.round(S.customers*0.045)-4})})}]},
-  {id:'churn',cond:()=>S.churn>5,spr:'🪣',title:'CHURN INVESTIGATION',sub:'Customers are leaking.',text:()=>`Churn is <b class="bad">${S.churn.toFixed(1)}%</b>/mo. Fix it how?`,
+  {id:'star',cond:()=>S.cash>50000,tip:'A great hire compounds — but only if your runway can absorb the cash hit.',spr:'🌟',title:'A STAR ENGINEER',sub:'A 10x builder will join — for a price.',text:()=>`A legendary engineer wants in for <b>${money(50000)}</b> in signing + 2% equity. Worth it?`,
+   choices:[{label:'Pay up — hire the savant',go:()=>{S.staff.eng++;S.equitySold+=0.02;return {ok:1,tag:'BIG HIRE',title:'SHIPPED!',text:`Product velocity jumps — but you gave up 2% and ${money(50000)}.`,d:fx({cash:-50000,product:13})};}},{label:'Pass — too rich for us',go:()=>({ok:1,tag:'FRUGAL',title:'STAYED LEAN',text:`You keep the cash and the cap table.`,d:fx({morale:-2})})}]},
+  {id:'whale',cond:()=>S.product>=52,tip:'Enterprise rewards product quality. Below ~72% product, the all-in pitch usually flops.',spr:'🐋',title:'ENTERPRISE WHALE RFP',sub:'A 200-location chain is shopping.',text:()=>`A huge prospect issues an RFP. Win it and it is a massive contract — if your product (now ${S.product}%) holds up to their scrutiny.`,
+   choices:[{label:'Go all-in on the pitch (custom work, risk)',go:()=>{if(S.product>=72&&Math.random()<0.85){const n=Math.round(30+S.product);S.customers+=n;S.arpu=Math.round(S.arpu*1.12);return {ok:1,mile:1,tag:'MILESTONE',title:'WHALE LANDED 🐋',text:`You win it — <b>+${num(n)} seats</b> and ARPU jumps.`,d:fx({brand:10,morale:6})};}return {ok:0,tag:'LOST IT',title:'NOT ENTERPRISE-READY',text:`They grill your security & uptime and walk. The pitch ate real time.`,d:fx({morale:-6,brand:-3,cash:-6000})};}},{label:'Decline — stay focused on SMB',go:()=>({ok:1,tag:'FOCUS',title:'KNOW YOUR LANE',text:`No enterprise rabbit hole.`,d:fx({morale:2})})}]},
+  {id:'competitor',tip:'You can only out-build a rival if your product is genuinely ahead (~65%+). Otherwise expect to bleed some customers either way.',spr:'⚔️',title:'A RIVAL UNDERCUTS YOU',sub:'A funded competitor slashes prices 40%.',text:()=>`"Why are you more expensive?" floods your inbox. Respond how?`,
+   choices:[{label:'Match their price (protect customers, kill margin)',go:()=>{S.arpu=Math.round(S.arpu*0.8);return {ok:0,tag:'PRICE WAR',title:'RACE DOWN',text:`Churn slows, but margin is torched and you signaled weakness.`,d:fx({brand:-2})};}},
+     {label:'Out-build them on quality',go:()=>{if(S.product>=65){return {ok:1,tag:'MOAT',title:'WON ON VALUE',text:`Depth they cannot match. Some of their customers defect to you.`,d:fx({customers:Math.round(S.customers*0.05)+8,brand:5})};}return {ok:0,tag:'OUTGUNNED',title:'NOT YET',text:`Not differentiated enough. You bleed customers.`,d:fx({customers:-Math.round(S.customers*0.06)-5,morale:-3})};}},
+     {label:'Ignore it',go:()=>({ok:0,tag:'GAMBLE',title:'HELD THE LINE',text:`Price-sensitive customers leave anyway.`,d:fx({customers:-Math.round(S.customers*0.05)-4})})}]},
+  {id:'pilot',cond:()=>S.product>=50,tip:'A two-step deal: how you close it (custom build vs discount) trades product risk against ARPU.',spr:'🏬',title:'ENTERPRISE PILOT',sub:'A 50-location chain will pilot you.',text:()=>`They are interested — but a pilot this big will pull the team in. Pursue it?`,
+   choices:[{label:'Pursue the pilot hard',go:()=>{fx({cash:-5000});return {_step2:{spr:'🤝',title:'THE PILOT WANTS MORE',sub:'Now they want something extra.',text:`They will sign — IF you either build a custom integration (6 weeks of eng) or give a steep discount. Your move?`,
+     choices:[{label:'Build the custom integration',go:()=>{if(S.product>=62&&Math.random()<0.8){const n=Math.round(25+S.product*0.4);S.customers+=n;return {ok:1,tag:'CLOSED',title:'PILOT WON 🤝',text:`The integration lands; <b>+${num(n)} seats</b> at full price.`,d:fx({product:3,brand:6,morale:4}),_next:back};}return {ok:0,tag:'OVERRAN',title:'SCOPE BLEW UP',text:`The custom build dragged; they signed small and you lost weeks.`,d:fx({customers:Math.round(S.customers*0.02)+4,morale:-5,cash:-8000}),_next:back};}},
+       {label:'Give the steep discount instead',go:()=>{const n=Math.round(22+S.product*0.3);S.customers+=n;S.arpu=Math.round(S.arpu*0.94);return {ok:1,tag:'DISCOUNTED',title:'PILOT WON (CHEAP)',text:`<b>+${num(n)} seats</b>, but your blended ARPU dips.`,d:fx({brand:4,morale:2}),_next:back};}}]}};}},
+     {label:'Pass — too distracting right now',go:()=>({ok:1,tag:'FOCUS',title:'STAYED THE COURSE',text:`No pilot, no distraction. The core engine keeps humming.`,d:fx({morale:1})})}]},
+  {id:'growthhack',tip:'A gamble: aggressive tactics can spike signups OR torch your brand. Strong brand absorbs the risk better.',spr:'🎢',title:'A GROWTH HACKER PITCHES YOU',sub:'"I can 3× your signups… my way."',text:()=>`Their tactics are aggressive and a little shady. Unleash them?`,
+   choices:[{label:'Unleash them — growth at all costs',go:()=>{if(Math.random()<0.55){const n=Math.round(S.customers*0.12)+25;S.customers+=n;return {ok:1,tag:'IT WORKED',title:'SIGNUPS SPIKE',text:`<b>+${num(n)}</b> new — but watch the quality.`,d:fx({brand:3,churn:0.6}),_next:back};}return {ok:0,tag:'BACKFIRED',title:'BRAND DAMAGE',text:`Spammy tactics blew up publicly. Trust takes a hit and churn rises.`,d:fx({brand:-12,churn:1.8,morale:-3}),_next:back};}},
+     {label:'Pass — grow clean',go:()=>({ok:1,tag:'PRINCIPLED',title:'SLOW & CLEAN',text:`No shortcuts. Your reputation stays intact.`,d:fx({brand:2})})}]},
+  {id:'cohort',tip:'Looks-too-good metrics can hide a churn problem. Digging costs cash now but prevents a nasty surprise.',spr:'🔎',title:'THE NUMBERS LOOK GREAT',sub:'…maybe too great.',text:()=>`Your dashboard is glowing. A junior analyst whispers that a churn problem might be hiding under the top-line. Investigate?`,
+   choices:[{label:'Dig into the cohorts (costs a week + cash)',go:()=>{const found=S.churn>4||Math.random()<0.5;if(found){S.hiddenChurn=0;return {ok:1,tag:'CAUGHT IT',title:'LEAK FOUND & FIXED',text:`There WAS a silent leak — you patch it before it spreads.`,d:fx({cash:-9000,churn:-1.2,morale:2})};}return {ok:1,tag:'ALL CLEAR',title:'GENUINELY HEALTHY',text:`The numbers are real. Cost you a little to be sure — worth it.`,d:fx({cash:-9000,morale:1})};}},
+     {label:'Trust the top-line, keep shipping',go:()=>{if(Math.random()<0.5){S.hiddenChurn=1.2;return {ok:0,tag:'IT WAS REAL',title:'A LEAK FESTERS',text:`A hidden churn problem starts quietly eating your base.`,d:fx({})};}return {ok:1,tag:'GOT LUCKY',title:'FINE… THIS TIME',text:`No hidden problem. You saved a week — and rolled the dice.`,d:fx({morale:1})};}}]},
+  {id:'churn',cond:()=>S.churn>5,tip:'High churn caps everything. Fixing the root cause beats discounting the exit.',spr:'🪣',title:'CHURN INVESTIGATION',sub:'Customers are leaking.',text:()=>`Churn is <b class="bad">${S.churn.toFixed(1)}%</b>/mo. Fix it how?`,
    choices:[{label:'Invest in product + support',go:()=>({ok:1,tag:'RETENTION',title:'PLUGGED THE LEAK',text:`You fix onboarding and add white-glove support.`,d:fx({cash:-22000,churn:-2.2,morale:2})})},{label:'Discount the people leaving',go:()=>({ok:0,tag:'BAND-AID',title:'BRIBING THE EXIT',text:`Trains everyone to threaten leaving. ARPU dips.`,d:fx({arpu:-Math.round(S.arpu*0.06),churn:-0.6})})}]},
-  {id:'viral',spr:'📈',title:'A VIRAL MOMENT',sub:'A creator features you to 2M followers.',text:()=>`Sudden spotlight. Pour fuel on it?`,
-   choices:[{label:'Blitz ads to ride the wave',go:()=>({ok:1,tag:'MOMENTUM',title:'CAUGHT THE WAVE',text:`You amplify it into real signups.`,d:fx({cash:-26000,customers:Math.round(S.customers*0.1)+25,brand:13})})},{label:'Let it ride for free',go:()=>({ok:1,tag:'THRIFTY',title:'FREE BUMP',text:`A nice organic spike that cost nothing.`,d:fx({customers:Math.round(S.customers*0.035)+7,brand:5})})}]},
-  {id:'burnoutkey',cond:()=>S.morale<55,spr:'🔥',title:'A KEY PERSON IS FRIED',sub:'Your best operator may quit.',text:()=>`Burnout is spreading. What do you do?`,
+  {id:'viral',tip:'Free spikes are nice; paid amplification is bigger but only worth it if you can afford it.',spr:'📈',title:'A VIRAL MOMENT',sub:'A creator features you to 2M followers.',text:()=>`Sudden spotlight. Pour fuel on it?`,
+   choices:[{label:'Blitz ads to ride the wave',go:()=>({ok:1,tag:'MOMENTUM',title:'CAUGHT THE WAVE',text:`You amplify it into real signups.`,d:fx({cash:-26000,customers:Math.round(S.customers*0.1)+22,brand:13})})},{label:'Let it ride for free',go:()=>({ok:1,tag:'THRIFTY',title:'FREE BUMP',text:`A nice organic spike that cost nothing.`,d:fx({customers:Math.round(S.customers*0.035)+7,brand:5})})}]},
+  {id:'burnoutkey',cond:()=>S.morale<55,tip:'Morale builds every other stat. When it dips, paying to protect the team usually beats grinding.',spr:'🔥',title:'A KEY PERSON IS FRIED',sub:'Your best operator may quit.',text:()=>`Burnout is spreading. What do you do?`,
    choices:[{label:'Give raises + real PTO',go:()=>({ok:1,tag:'CARE',title:'TEAM FIRST',text:`Morale rebounds. People remember who had their back.`,d:fx({cash:-18000,morale:17})})},{label:'Push through the crunch',go:()=>({ok:0,tag:'GRIND',title:'SOMETHING BREAKS',text:`A key player checks out. Output drops.`,d:fx({morale:-10,product:-5})})}]},
-  {id:'security',cond:()=>S.customers>200,spr:'🔓',title:'SECURITY INCIDENT',sub:'A researcher reports a data leak.',text:()=>`Sensitive data was exposed. The clock is ticking.`,
+  {id:'security',cond:()=>S.customers>200,tip:'Trust is hard to rebuild. Honest disclosure costs cash; a cover-up costs your brand.',spr:'🔓',title:'SECURITY INCIDENT',sub:'A researcher reports a data leak.',text:()=>`Sensitive data was exposed. The clock is ticking.`,
    choices:[{label:'Disclose, fix fast, notify customers',go:()=>({ok:1,tag:'INTEGRITY',title:'HANDLED RIGHT',text:`Costly, but trust survives.`,d:fx({cash:-32000,brand:3,churn:0.3})})},{label:'Quietly patch and say nothing',go:()=>({ok:0,tag:'COVER-UP',title:'IT LEAKS ANYWAY',text:`The cover-up hurts worse than the bug.`,d:fx({brand:-14,churn:2,customers:-Math.round(S.customers*0.05)})})}]},
-  {id:'acquihire',cond:()=>S.customers<400&&S.q>=4,spr:'🤲',title:'ACQUIHIRE OFFER',sub:'A big co wants your team — not your product.',text:()=>`They offer <b>${money(2200000)}</b> to absorb the team and shut the product down.`,
-   choices:[{label:'Take the safe exit',go:()=>ending('acquihire',2200000)},{label:'No — we are just getting started',go:()=>({ok:1,tag:'CONVICTION',title:'BET ON YOURSELF',text:`You wave off $2.2M. Now prove it.`,d:fx({morale:6})})}]},
-  {id:'partner',cond:()=>S.product>=60,spr:'🔗',title:'PLATFORM INTEGRATION',sub:'A giant offers an official integration.',text:()=>`Engineering effort now for a steady channel later. Build it?`,
-   choices:[{label:'Build the integration',go:()=>({ok:1,tag:'DISTRIBUTION',title:'WIRED IN',text:`A durable new top-of-funnel.`,d:fx({cash:-16000,brand:9,product:4})})},{label:'Skip — protect the roadmap',go:()=>({ok:1,tag:'FOCUSED',title:'ROADMAP INTACT',text:`Team stays on core.`,d:fx({})})}]},
-  {id:'pricingpower',cond:()=>S.product>=70&&S.churn<5,spr:'💎',title:'PRICING POWER',sub:'Customers love you.',text:()=>`Low churn + high love = room to charge more. Pull the lever?`,
+  {id:'acquihire',cond:()=>S.customers<350&&S.q>=4,tip:'A safe early exit. Good if you are stalling; a mistake if you are about to break out.',spr:'🤲',title:'ACQUIHIRE OFFER',sub:'A big co wants your team — not your product.',text:()=>`They offer <b>${money(2500000)}</b> to absorb the team and shut the product down.`,
+   choices:[{label:'Take the safe exit',go:()=>ending('acquihire',2500000)},{label:'No — we are just getting started',go:()=>({ok:1,tag:'CONVICTION',title:'BET ON YOURSELF',text:`You wave off $2.5M. Now prove it.`,d:fx({morale:6})})}]},
+  {id:'pricingpower',cond:()=>S.product>=70&&S.churn<5,tip:'Low churn + loved product = real pricing power. Raising prices here is nearly free money.',spr:'💎',title:'PRICING POWER',sub:'Customers love you.',text:()=>`Low churn + high love = room to charge more. Pull the lever?`,
    choices:[{label:'Raise prices 20%',go:()=>({ok:1,tag:'MARGIN',title:'WORTH IT',text:`A few grumble, almost none leave.`,d:fx({arpu:Math.round(S.arpu*0.2),churn:0.6})})},{label:'Hold prices, build goodwill',go:()=>({ok:1,tag:'LONG GAME',title:'GOODWILL BANKED',text:`Loyalty deepens.`,d:fx({brand:5,churn:-0.4})})}]},
 ];
-const FOUNDER_EVENTS={
-  builder:{spr:'😴',title:'YOU DRIFTED OFF',sub:'The Builder vanished into a side project.',text:()=>`Weeks lost to a shiny rabbit hole. The roadmap stalled.`,
-    choices:[{label:'Snap back and refocus hard',go:()=>({ok:0,tag:'REFOCUS',title:'BACK TO IT',text:`You claw the momentum back — at a cost.`,d:fx({product:-3,morale:-3,customers:-Math.round(S.customers*0.02)})})},{label:'Hire a PM to keep you on track',go:()=>{S.staff.eng=S.staff.eng;return {ok:1,tag:'SYSTEMS',title:'GUARDRAILS',text:`You buy structure so it stops happening.`,d:fx({cash:-14000,morale:4})};}}]},
-  boss:{spr:'🥊',title:'CO-FOUNDER FIGHT',sub:'Your bossiness blew up.',text:()=>`A shouting match over control rattles the team.`,
-    choices:[{label:'Apologize & share the wheel',go:()=>({ok:1,tag:'HUMILITY',title:'BRIDGE REBUILT',text:`You give ground. The team exhales.`,d:fx({morale:10})})},{label:'Double down — "my way"',go:()=>({ok:0,tag:'FRICTION',title:'IT FESTERS',text:`You win the argument, lose the room.`,d:fx({morale:-9,product:-3})})}]},
-};
 function presentEvent(){
   const val=valuation();
-  // acquisition offer
   if(val>=6000000&&(S.q-S.lastOfferQ)>=2&&(val>=44000000||Math.random()<0.4)){
-    S.lastOfferQ=S.q;const offer=Math.round(val*(0.8+Math.random()*0.45)*S.D.offer*FM('offer',1));S.peakOffer=Math.max(S.peakOffer,offer);
-    const payout=Math.round(offer*(1-S.equitySold));
+    S.lastOfferQ=S.q;S.curEvent=true;S.curTip='Offers run ~0.8–1.25× your valuation. An offer ≥ $48M wins instantly; below that, you are betting the next one is bigger.';
+    const offer=Math.round(val*(0.8+Math.random()*0.45)*S.D.offer*FM('offer',1));S.peakOffer=Math.max(S.peakOffer,offer);const payout=Math.round(offer*(1-S.equitySold));
     return renderBeat({spr:'💰',title:'ACQUISITION OFFER',sub:'A buyer slides a term sheet across the table.',
       text:`An acquirer offers <b class="g">${money(offer)}</b> for the company.${S.equitySold>0?` After your ${Math.round(S.equitySold*100)}% sold, you net <b>${money(payout)}</b>.`:''} ${offer>=48000000?'<br><br>🎯 This <b class="g">clears your $48M goal.</b>':'<br><br>Below your $48M dream — take it, or bet on more?'}`,
-      choices:[{label:`Accept — sell for ${money(offer)}`,go:()=>offer>=48000000?ending('exit',offer):ending('soldcheap',offer)},{label:'Reject — keep scaling',go:()=>({ok:1,tag:'ALL IN',title:'WALKED AWAY',text:`You bet the next offer is bigger. It might not be.`,d:fx({morale:4}),_next:()=>renderBase()})}]});}
-  // VC offer
+      choices:[{label:`Accept — sell for ${money(offer)}`,go:()=>offer>=48000000?ending('exit',offer):ending('soldcheap',offer)},{label:'Reject — keep scaling',go:()=>({ok:1,tag:'ALL IN',title:'WALKED AWAY',text:`You bet the next offer is bigger. It might not be.`,d:fx({morale:4}),_next:back})}]});}
   if(!S.vcTaken&&S.equitySold<0.3&&S.q>=2&&S.lastGrowth>0.22&&Math.random()<0.28){
+    S.curEvent=true;S.curTip='VC cash accelerates growth but dilutes your exit and adds a board. Bootstrapping keeps 100% of a smaller pie.';
     const raise=S.cash<60000?3000000:6000000,eq=0.18;
     return renderBeat({spr:'🏦',title:'VC TERM SHEET',sub:'Rocket fuel — for a slice of the company.',
       text:`A fund offers <b>${money(raise)}</b> for <b>${Math.round(eq*100)}%</b>. Cash to grow fast — but a smaller exit and a board to answer to.`,
-      choices:[{label:`Take ${money(raise)} for ${Math.round(eq*100)}%`,go:()=>{S.vcTaken=true;S.equitySold+=eq;return {ok:1,tag:'FUNDED',title:'WIRED IN',text:`War chest secured. Now grow into it.`,d:fx({cash:raise,morale:3}),_next:()=>renderBase()};}},{label:'Stay bootstrapped',go:()=>({ok:1,tag:'INDEPENDENT',title:'NO MASTERS',text:`100% yours. Every dollar of the exit too.`,d:fx({morale:4}),_next:()=>renderBase()})}]});}
-  // founder flaw event
+      choices:[{label:`Take ${money(raise)} for ${Math.round(eq*100)}%`,go:()=>{S.vcTaken=true;S.equitySold+=eq;return {ok:1,tag:'FUNDED',title:'WIRED IN',text:`War chest secured. Now grow into it.`,d:fx({cash:raise,morale:3}),_next:back};}},{label:'Stay bootstrapped',go:()=>({ok:1,tag:'INDEPENDENT',title:'NO MASTERS',text:`100% yours. Every dollar of the exit too.`,d:fx({morale:4}),_next:back})}]});}
   const fe=FOUNDER_EVENTS[S.founderId];
   if(fe&&((S.F.driftRisk&&Math.random()<0.18)||(S.F.conflictRisk&&S.q<8&&Math.random()<0.2))){
-    const b={...fe};const bc=fe.choices;b.choices=bc.map(c=>({label:c.label,go:()=>{const out=c.go();if(out&&!out._next)out._next=()=>renderBase();return out;}}));return renderBeat(b);}
-  // operational
+    S.curEvent=true;S.curTip=fe.tip||'';const b={...fe};const bc=fe.choices;b.choices=bc.map(c=>({label:c.label,go:()=>{const out=c.go();if(out&&!out._next&&!out._step2)out._next=back;return out;}}));return renderBeat(b);}
   const pool=EVENTS.filter(e=>!e.cond||e.cond());const e=pool.length?pool[Math.floor(Math.random()*pool.length)]:null;
   if(!e)return renderBase();
-  const b={...e};const bc=typeof e.choices==='function'?e.choices():e.choices;b.choices=bc.map(c=>({label:c.label,go:()=>{const out=c.go();if(out&&!out._next)out._next=()=>renderBase();return out;}}));renderBeat(b);}
+  S.curEvent=true;S.curTip=e.tip||'';const b={...e};const bc=typeof e.choices==='function'?e.choices():e.choices;b.choices=bc.map(c=>({label:c.label,go:()=>{const out=c.go();if(out&&!out._next&&!out._step2)out._next=back;return out;}}));renderBeat(b);}
+const FOUNDER_EVENTS={
+  builder:{tip:'The Builder drifts — invest in structure (a PM) so it stops costing you quarters.',spr:'😴',title:'YOU DRIFTED OFF',sub:'The Builder vanished into a side project.',text:()=>`Weeks lost to a shiny rabbit hole. The roadmap stalled.`,
+    choices:[{label:'Snap back and refocus hard',go:()=>({ok:0,tag:'REFOCUS',title:'BACK TO IT',text:`You claw the momentum back — at a cost.`,d:fx({product:-3,morale:-3,customers:-Math.round(S.customers*0.02)})})},{label:'Hire a PM to keep you on track',go:()=>({ok:1,tag:'SYSTEMS',title:'GUARDRAILS',text:`You buy structure so it stops happening.`,d:fx({cash:-14000,morale:4})})}]},
+  boss:{tip:'The Boss creates friction — sharing control rebuilds morale faster than winning the argument.',spr:'🥊',title:'CO-FOUNDER FIGHT',sub:'Your bossiness blew up.',text:()=>`A shouting match over control rattles the team.`,
+    choices:[{label:'Apologize & share the wheel',go:()=>({ok:1,tag:'HUMILITY',title:'BRIDGE REBUILT',text:`You give ground. The team exhales.`,d:fx({morale:10})})},{label:'Double down — "my way"',go:()=>({ok:0,tag:'FRICTION',title:'IT FESTERS',text:`You win the argument, lose the room.`,d:fx({morale:-9,product:-3})})}]},
+};
+
+/* ============ ARIA — AI CO-FOUNDER (heuristic advisor) ============ */
+function ariaBestBuy(){
+  if(S.churn>6&&!owns('onboarding'))return 'Guided Onboarding (cheap churn cut)';
+  if(S.product<60)return 'an Engineer (raise product, trim churn)';
+  if(S.brand<40&&!owns('content'))return 'the Content Engine + a Marketer (brand & growth)';
+  if(owns('content')&&!owns('referral'))return 'the Referral Program (compounding growth)';
+  if(owns('mobile')&&!owns('ai'))return 'the AI Assistant (churn down, ARPU up)';
+  if(owns('rnd')&&!owns('enterprise'))return 'the Enterprise Tier (big ARPU jump)';
+  return 'a Salesperson (more new customers)';}
+function ariaMove(){const out=[],c=S.customers,net=netMo(),rw=runwayQ();
+  if(net<0&&rw<=2)out.push(`🔴 Cash is bleeding ${money(-net)}/mo — only ~${rw} quarter(s) of runway. Do NOT hire now. Lift MRR (raise prices if churn<5%, or close more) or trim burn before you go bankrupt.`);
+  if(S.churn>6.5)out.push(`📉 Churn ${S.churn.toFixed(1)}%/mo is your #1 problem — ~${num(Math.round(c*S.churn/100*3))} customers/quarter walk out the back. Fix retention (Onboarding, a Support Rep, AI Assistant) BEFORE buying growth, or you are filling a leaky bucket.`);
+  if(S.product<55)out.push(`🛠️ Product is only ${S.product}% — too weak for enterprise or to beat rivals on quality. An Engineer (then R&D) is your highest-leverage spend.`);
+  if(S.lastGrowth<0.12&&S.churn<=6.5&&net>=0)out.push(`🌱 Growth has stalled (${Math.round(S.lastGrowth*100)}%/qtr) but retention is fine — pour fuel on acquisition: a Salesperson or Marketer + Content/Paid Ads compound over time.`);
+  if(S.cash>120000&&net>=0&&totalStaff()<staffCap())out.push(`💰 You are sitting on ${money(S.cash)} and profitable. Idle cash earns nothing — reinvest. Top leverage right now: ${ariaBestBuy()}.`);
+  if(valuation()>=48000000)out.push(`🎯 Your valuation (${money(valuation())}) already clears $48M. When the next ACQUISITION OFFER appears, an offer ≥$48M wins — hold out for a strong one (~0.8–1.25× valuation).`);
+  else if(valuation()>=38000000)out.push(`🏁 You are close to the $48M line (valuation ${money(valuation())}). Keep growth high — offers scale with valuation, so one more strong quarter could clear it.`);
+  if(mrr()>=2500000)out.push(`👑 You are past halfway to the $5M/mo empire (${money(mrr())}/mo). If you would rather not sell, keep stacking growth + ARPU (Enterprise tier, price raises).`);
+  if(!out.length)out.push(`Steady: ${money(mrr())}/mo, ${S.churn.toFixed(1)}% churn, ${money(S.cash)} cash. Pick the bottleneck — churn>5% → retention; growth<15%/qtr → sales/marketing; cash idle → reinvest.`);
+  return out.slice(0,2).join('\n\n');}
+function ariaHire(){const net=netMo(),rw=runwayQ();
+  if(totalStaff()>=staffCap())return `You are at your headcount cap (${staffCap()}). Grow MRR to unlock more seats — revenue earns the team, not the other way round. Right now, an upgrade is a better use of cash: ${ariaBestBuy()}.`;
+  if(net<0&&rw<=2)return `Risky — you are already burning ${money(-net)}/mo with ~${rw}q runway. Another salary could sink you. Fix revenue first, then hire.`;
+  let role,why;
+  if(S.churn>6){role='Support Rep';why=`churn is ${S.churn.toFixed(1)}% — support pulls it down`;}
+  else if(S.product<60){role='Engineer';why=`product is ${S.product}% — engineering raises it and trims churn`;}
+  else if(S.brand<45){role='Marketer';why=`brand is ${Math.round(S.brand)}% — marketing widens the funnel`;}
+  else{role='Salesperson';why='your funnel is healthy — sales converts more of it';}
+  const r=ROLES.find(x=>x.name===role);
+  return `Hire a ${role} — ${why}. Costs ${money(hireCost(r))} up front and adds ${money(roleSalary(r))}/mo salary, so check your Net/month stays survivable after.`;}
+function ariaRunway(){const net=netMo();if(net>=0)return `You are profitable: +${money(net)}/month after ${money(salariesMo())} salaries and ${money(infraMo())} infra. Cash (${money(S.cash)}) grows every quarter — safe to reinvest.`;return `You are burning ${money(-net)}/month (MRR ${money(mrr())} − ${money(salariesMo())} salaries − ${money(infraMo())} infra). At that rate ${money(S.cash)} lasts ~${runwayQ()} quarter(s). Get to profitability or raise cash before then. Tip: a hire is one-time cash PLUS permanent monthly salary — that is usually what flips you negative.`;}
+function ariaWin(){const tx=48000000-valuation(),te=5000000-mrr();return `Two ways to win, by end of Year 3:\n\n💰 SELL ≥ $48M — valuation is ${money(valuation())} (${tx>0?money(tx)+' to go':'cleared — hold for a strong offer'}). Valuation ≈ ARR × multiple, so grow MRR and keep churn low to lift the multiple, then accept a fat acquisition offer.\n\n👑 $5M/MONTH empire — you are at ${money(mrr())}/mo (${te>0?money(te)+'/mo to go':'reached!'}). Needs relentless growth + ARPU: Enterprise tier, referral loop, price raises.`;}
+function ariaDecision(){const net=netMo(),rw=runwayQ(),bits=[];
+  if(rw<=2&&net<0)bits.push(`cash is tight (~${rw}q runway) → favor the cheaper / safer option`);
+  if(S.churn>6)bits.push(`churn is high → prefer anything that fixes product or retention`);
+  if(S.product<55)bits.push(`product is weak → "go big / enterprise" options will likely fail`);
+  if(S.cash>150000&&net>=0)bits.push(`you can afford to invest → the bold option may pay off`);
+  if(S.brand<35)bits.push(`brand is low → avoid anything that risks reputation`);
+  if(!bits.length)bits.push(`you are stable → take the option with the best upside`);
+  let s=`Given your numbers: `+bits.join('; ')+'.';
+  if(S.curTip)s+='\n\n💡 '+S.curTip;
+  return s;}
+function ariaAnswer(key){switch(key){case 'move':return ariaMove();case 'hire':return ariaHire();case 'runway':return ariaRunway();case 'win':return ariaWin();case 'decision':return ariaDecision();default:return ariaMove();}}
+function ariaPush(role,txt){const log=document.getElementById('ariaLog');const d=document.createElement('div');d.className='amsg '+role;d.innerHTML=txt.replace(/\n/g,'<br>');log.appendChild(d);log.scrollTop=log.scrollHeight;}
+function ariaAsk(key,label){sfx.click();ariaPush('user',label||key);setTimeout(()=>ariaPush('bot',ariaAnswer(key)),120);}
+function ariaQButtons(){const q=document.getElementById('ariaQ');let h='';
+  h+=`<button class="aq" data-q="move">What's my best move?</button>`;
+  h+=`<button class="aq" data-q="hire">Should I hire?</button>`;
+  h+=`<button class="aq" data-q="runway">How's my runway?</button>`;
+  h+=`<button class="aq" data-q="win">How do I win from here?</button>`;
+  if(S.curEvent)h=`<button class="aq" data-q="decision" style="border-color:var(--gold);color:var(--gold)">🤔 Analyze this decision</button>`+h;
+  q.innerHTML=h;
+  const labels={move:"What's my best move?",hire:'Should I hire?',runway:"How's my runway?",win:'How do I win from here?',decision:'Analyze this decision'};
+  document.querySelectorAll('#ariaQ .aq').forEach(el=>el.onclick=()=>ariaAsk(el.dataset.q,labels[el.dataset.q]));}
+function openAria(){sfx.click();document.getElementById('aria').classList.remove('hidden');
+  const log=document.getElementById('ariaLog');
+  if(S.phase!=='scale'){if(!log.children.length)ariaPush('bot',`ARIA here 👋 We're still in the summer build. Ship the product and nail the launch first — once you're scaling I can analyze your runway, hiring, churn, and the path to $48M or $5M/mo.`);ariaQButtons();return;}
+  if(!log.children.length)ariaPush('bot',`Hey, ARIA here — your AI co-founder. I read the live numbers. Ask me anything, or tap a question below.\n\nQuick read: ${money(mrr())}/mo, ${S.churn.toFixed(1)}% churn, valuation ${money(valuation())}.`);
+  ariaQButtons();}
+function closeAria(){document.getElementById('aria').classList.add('hidden');}
+function ariaTextSubmit(){const inp=document.getElementById('ariaIn');const t=(inp.value||'').toLowerCase().trim();if(!t)return;inp.value='';ariaPush('user',t);
+  let key='move';
+  if(/hire|staff|team|engineer|sales|market|support|headcount/.test(t))key='hire';
+  else if(/runway|cash|money|broke|burn|afford|negative|profit/.test(t))key='runway';
+  else if(/win|goal|exit|sell|48|empire|5m|valuation/.test(t))key='win';
+  else if(/(this|the) (decision|option|choice)|which (one|option)|should i (pick|choose|take|accept)/.test(t)&&S.curEvent)key='decision';
+  setTimeout(()=>ariaPush('bot',ariaAnswer(key)),120);}
 
 /* ============ ENDINGS ============ */
 function finalReckoning(){const v=valuation();if(v>=200000000)return ending('ipo',v);if(v>=48000000)return ending('whaleheld',v);if(mrr()>=300000)return ending('lifestyle',v);return ending('flatlined',v);}
 function ending(type,amount){screen='ending';
-  document.getElementById('title').classList.add('hidden');['scene','base','outwrap','celebrate'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('title').classList.add('hidden');['scene','base','outwrap','celebrate','aria'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   const E=document.getElementById('ending');E.classList.remove('hidden');clearConfetti('endConfetti');
   let grade,title,color,lesson,win=false;const payout=amount?Math.round(amount*(1-S.equitySold)):0;
   switch(type){
@@ -411,7 +535,7 @@ function ending(type,amount){screen='ending';
     case 'acquihire':grade='★';color='var(--mint)';title='ACQUIHIRED';lesson='LESSON: Safe money, soft landing — but the product died.';break;
     case 'lifestyle':grade='★';color='var(--mint)';title='SOLID BUSINESS';lesson='LESSON: Profitable and real, just not a rocket. Push growth harder next run.';break;
     case 'flatlined':grade='▢';color='var(--dim)';title='IT FLATLINED';lesson='LESSON: You survived but never found the growth gear. Reinvest earlier into sales + marketing.';break;
-    case 'bankrupt':grade='💸';color='var(--red)';title='OUT OF CASH';lesson='LESSON: You out-spent your revenue. Size your bets to your runway.';break;
+    case 'bankrupt':grade='💸';color='var(--red)';title='OUT OF CASH';lesson='LESSON: You out-spent your revenue. Hires add permanent monthly salary — watch the P&L and runway.';break;
     case 'burnout':grade='☠';color='var(--red)';title='THE TEAM BURNED OUT';lesson='LESSON: You scaled customers, not the team. Morale builds everything else.';break;
   }
   document.getElementById('grade').textContent=grade;document.getElementById('grade').style.color=color;
@@ -436,16 +560,21 @@ function beginGame(){S.cash=Math.round(1500*S.D.cash*FM('cash',1));screen='scene
 
 /* ============ CONTROL ============ */
 function startFlow(){ac();startMusic();S=START();document.getElementById('title').classList.add('hidden');document.getElementById('ending').classList.add('hidden');renderDifficulty();}
-function restart(){S=START();screen='title';document.getElementById('ending').classList.add('hidden');['base','outwrap','celebrate'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById('scene').classList.remove('hidden');document.getElementById('scene').innerHTML='';document.getElementById('title').classList.remove('hidden');renderHUD();}
+function restart(){S=START();screen='title';['ending','base','outwrap','celebrate','aria'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById('ariaLog').innerHTML='';document.getElementById('scene').classList.remove('hidden');document.getElementById('scene').innerHTML='';document.getElementById('title').classList.remove('hidden');renderHUD();}
 function runForward(){if(screen!=='outcome')return;const f=fwd;fwd=null;sfx.click();if(f)f();}
 document.getElementById('fwdBtn').onclick=runForward;
 document.getElementById('title').onclick=startFlow;
 document.getElementById('againBtn').onclick=restart;
 document.getElementById('restartBtn').onclick=restart;
 document.getElementById('celBtn').onclick=celContinue;
-document.getElementById('sndBtn').onclick=()=>{soundOn=!soundOn;document.getElementById('sndBtn').textContent='🔊 '+(soundOn?'ON':'OFF');if(soundOn){ac();sfx.click();}};
+document.getElementById('aiBtn').onclick=openAria;
+document.getElementById('ariaClose').onclick=closeAria;
+document.getElementById('ariaSend').onclick=ariaTextSubmit;
+document.getElementById('ariaIn').addEventListener('keydown',e=>{if(e.key==='Enter')ariaTextSubmit();});
 document.getElementById('musBtn').onclick=toggleMusic;
+document.getElementById('sndBtn').onclick=()=>{soundOn=!soundOn;document.getElementById('sndBtn').textContent='🔊 '+(soundOn?'ON':'OFF');if(soundOn){ac();sfx.click();}};
 document.addEventListener('keydown',e=>{
+  if(document.getElementById('ariaIn')===document.activeElement)return;
   if(screen==='title'&&(e.key===' '||e.key==='Enter'))startFlow();
   else if(screen==='scene'&&['1','2','3','4'].includes(e.key)){const el=document.querySelector(`#scene .choice[data-i="${+e.key-1}"]`);if(el)el.click();}
   else if(screen==='outcome'&&(e.key==='Enter'||e.key===' ')){e.preventDefault();runForward();}
