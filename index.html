@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bootstrap Tycoon — 8-bit</title>
+<meta name="description" content="An 8-bit startup grind: build a SaaS from broke to paying.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0f1e; --panel:#101830; --panel2:#0c1226; --ink:#d8f5e8; --dim:#6f8f81;
+    --mint:#34e2a0; --mint2:#5cffc4; --gold:#ffd23f; --red:#ff4d6d; --blue:#54b6ff;
+    --edge:#1f2c4d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(120% 90% at 50% 0%, #11193a 0%, var(--bg) 55%, #05070f 100%);
+    color:var(--ink); font-family:'VT323',monospace; font-size:22px; line-height:1.05;
+    display:flex; align-items:center; justify-content:center; min-height:100vh; padding:18px;
+    overflow-x:hidden; image-rendering:pixelated; -webkit-font-smoothing:none;
+  }
+  .pixel{font-family:'Press Start 2P',monospace}
+  /* CRT overlay */
+  #crt{position:fixed; inset:0; pointer-events:none; z-index:60;
+    background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,.16) 3px, rgba(0,0,0,0) 4px);
+    mix-blend-mode:multiply;}
+  #crt::after{content:""; position:absolute; inset:0;
+    background:radial-gradient(120% 100% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%);}
+
+  #frame{width:min(860px,100%); background:var(--panel2);
+    border:4px solid var(--mint); padding:0;
+    box-shadow:0 0 0 4px #0a0f1e, 0 0 0 8px var(--edge), 0 18px 0 8px rgba(0,0,0,.4), 0 0 40px rgba(52,226,160,.25);
+    position:relative;}
+  .bar-top{display:flex; justify-content:space-between; align-items:center;
+    background:var(--mint); color:#04120c; padding:8px 12px; font-size:11px;}
+  .bar-top .t{font-size:11px; letter-spacing:1px}
+  .bar-top .r{font-size:9px}
+
+  /* HUD */
+  #hud{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:12px;
+    background:linear-gradient(180deg,#0e1730,#0b1124); border-bottom:4px solid var(--edge);}
+  .stat{background:var(--panel); border:3px solid var(--edge); padding:7px 8px;}
+  .stat .lab{font-family:'Press Start 2P'; font-size:8px; color:var(--dim); display:flex; justify-content:space-between; align-items:center}
+  .stat .val{font-size:26px; margin-top:3px; color:var(--mint2)}
+  .stat.flash-up{animation:fup .5s steps(2)}
+  .stat.flash-down{animation:fdn .5s steps(2)}
+  @keyframes fup{0%,100%{background:var(--panel)}50%{background:#13402c}}
+  @keyframes fdn{0%,100%{background:var(--panel)}50%{background:#3d1320}}
+  .meter{display:flex; gap:2px; margin-top:5px}
+  .seg{width:100%; height:9px; background:#08101f; border:1px solid #1a294a}
+  .seg.on{background:var(--mint)}
+  .seg.warn.on{background:var(--gold)}
+  .seg.bad.on{background:var(--red)}
+
+  #flags{display:flex; gap:6px; flex-wrap:wrap; padding:0 12px 12px; background:#0b1124; border-bottom:4px solid var(--edge)}
+  .flag{font-family:'Press Start 2P'; font-size:8px; padding:5px 7px; border:2px solid var(--edge);
+    background:#0e1730; color:var(--dim)}
+  .flag.on{color:#04120c; background:var(--mint); border-color:var(--mint2)}
+  .flag.danger{color:#fff; background:#3a0f1c; border-color:var(--red)}
+
+  /* Scene */
+  #scene{padding:16px}
+  .sprite-screen{display:flex; align-items:center; gap:14px; background:#070c18;
+    border:3px solid var(--edge); padding:12px; margin-bottom:12px}
+  .spr{font-size:64px; line-height:1; filter:drop-shadow(0 4px 0 rgba(0,0,0,.5)); animation:bob 1.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .scene-title{font-family:'Press Start 2P'; font-size:13px; color:var(--gold); line-height:1.5; text-shadow:0 3px 0 #6b4e00}
+  .scene-sub{font-size:18px; color:var(--dim); margin-top:6px}
+  #sceneText{font-size:23px; line-height:1.18; margin:6px 2px 14px; color:var(--ink)}
+  #sceneText b{color:var(--mint2)}
+  #sceneText .warn{color:var(--gold)}
+  #sceneText .bad{color:var(--red)}
+
+  .choices{display:flex; flex-direction:column; gap:10px}
+  .choice{font-family:'VT323'; font-size:23px; text-align:left; color:var(--ink);
+    background:var(--panel); border:3px solid var(--edge); padding:11px 13px; cursor:pointer;
+    display:flex; gap:10px; align-items:baseline; transition:none}
+  .choice .k{font-family:'Press Start 2P'; font-size:11px; color:var(--mint); flex:0 0 auto}
+  .choice:hover{background:var(--mint); color:#04120c; border-color:var(--mint2); transform:translate(-2px,-2px); box-shadow:4px 4px 0 #04120c}
+  .choice:hover .k{color:#04120c}
+  .choice:active{transform:translate(0,0); box-shadow:none}
+
+  /* Outcome */
+  #outcome{padding:16px; display:none}
+  .out-card{border:3px solid; padding:14px; background:#070c18}
+  .out-card.good{border-color:var(--mint)}
+  .out-card.bad{border-color:var(--red)}
+  .out-card.mile{border-color:var(--gold); box-shadow:0 0 24px rgba(255,210,63,.4); animation:pulse 1s steps(3) infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 10px rgba(255,210,63,.2)}50%{box-shadow:0 0 30px rgba(255,210,63,.55)}}
+  .out-tag{font-family:'Press Start 2P'; font-size:11px; margin-bottom:8px}
+  .out-tag.good{color:var(--mint2)} .out-tag.bad{color:var(--red)} .out-tag.mile{color:var(--gold)}
+  #outText{font-size:23px; line-height:1.18}
+  .delta-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+  .delta{font-family:'Press Start 2P'; font-size:9px; padding:5px 7px; border:2px solid var(--edge); background:#0e1730}
+  .delta.up{color:var(--mint2); border-color:var(--mint)}
+  .delta.down{color:var(--red); border-color:var(--red)}
+
+  .btn{font-family:'Press Start 2P'; font-size:11px; color:#04120c; background:var(--mint);
+    border:none; padding:13px 16px; cursor:pointer; margin-top:14px; width:100%;
+    box-shadow:0 5px 0 #128055}
+  .btn:hover{background:var(--mint2)}
+  .btn:active{transform:translateY(4px); box-shadow:0 1px 0 #128055}
+
+  footer{display:flex; justify-content:space-between; align-items:center; gap:8px;
+    padding:9px 12px; background:#080d1a; border-top:4px solid var(--edge); font-family:'Press Start 2P'; font-size:8px; color:var(--dim)}
+  footer button{font-family:'Press Start 2P'; font-size:8px; color:var(--dim); background:#0e1730; border:2px solid var(--edge); padding:6px 8px; cursor:pointer}
+  footer button:hover{color:var(--mint2); border-color:var(--mint)}
+
+  /* Overlays */
+  .overlay{position:absolute; inset:0; background:rgba(5,7,15,.96); z-index:40;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px}
+  .hidden{display:none}
+  #title h1{font-family:'Press Start 2P'; font-size:30px; color:var(--mint2); line-height:1.4; text-shadow:0 5px 0 #0c7a51, 0 0 24px rgba(92,255,196,.5)}
+  #title .sub{font-family:'Press Start 2P'; font-size:11px; color:var(--gold); margin-top:14px}
+  #title .crew{font-size:60px; margin:18px 0; letter-spacing:6px}
+  #title .blurb{font-size:21px; color:var(--dim); max-width:560px; margin:6px auto 0; line-height:1.15}
+  .blink{animation:blink 1s steps(2) infinite}
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  #start{font-family:'Press Start 2P'; font-size:16px; color:var(--mint2); margin-top:26px}
+
+  #ending h2{font-family:'Press Start 2P'; font-size:20px; line-height:1.5}
+  #ending .score{font-size:23px; color:var(--ink); margin-top:14px; line-height:1.25; max-width:600px}
+  #ending .reveal{font-size:19px; color:var(--dim); margin-top:14px; max-width:600px; line-height:1.2}
+  #ending .lesson{font-family:'Press Start 2P'; font-size:10px; color:var(--gold); margin-top:18px; line-height:1.7; max-width:620px}
+  .grade{font-family:'Press Start 2P'; font-size:46px; margin:6px 0 2px}
+</style>
+</head>
+<body>
+<div id="crt"></div>
+
+<div id="frame">
+  <div class="bar-top"><span class="t pixel">BOOTSTRAP TYCOON</span><span class="r pixel" id="seasonTag">SUMMER · WK 1</span></div>
+
+  <!-- HUD -->
+  <div id="hud"></div>
+  <div id="flags"></div>
+
+  <!-- Scene -->
+  <div id="scene">
+    <div class="sprite-screen">
+      <div class="spr" id="spr">🛠️</div>
+      <div>
+        <div class="scene-title" id="sceneTitle">LOADING…</div>
+        <div class="scene-sub" id="sceneSub"></div>
+      </div>
+    </div>
+    <div id="sceneText"></div>
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <!-- Outcome -->
+  <div id="outcome">
+    <div class="out-card" id="outCard">
+      <div class="out-tag" id="outTag"></div>
+      <div id="outText"></div>
+      <div class="delta-row" id="deltas"></div>
+    </div>
+    <button class="btn" id="continueBtn" onclick="nextBeat()">▶ CONTINUE  (ENTER)</button>
+  </div>
+
+  <footer>
+    <span>♥ INDIE SAAS · 8-BIT EDITION</span>
+    <span>
+      <button id="sndBtn" onclick="toggleSound()">🔊 SND:ON</button>
+      <button onclick="restart()">⟲ RESTART</button>
+    </span>
+  </footer>
+
+  <!-- Title overlay -->
+  <div class="overlay" id="title">
+    <h1>BOOTSTRAP<br>TYCOON</h1>
+    <div class="sub">▚ AN 8-BIT STARTUP GRIND ▞</div>
+    <div class="crew">🧑‍💻🤝🛡️💰</div>
+    <div class="blurb">4 broke founders. 0 customers. A half-built app. A list of cold leads in the chamber. You have one summer before life steals your hours. Ship the product. Land a paying customer. Don't blow it.</div>
+    <div id="start" class="blink">▶ PRESS START</div>
+  </div>
+
+  <!-- Ending overlay -->
+  <div class="overlay hidden" id="ending">
+    <div class="grade" id="grade">★</div>
+    <h2 id="endTitle"></h2>
+    <div class="score" id="endScore"></div>
+    <div class="reveal" id="endReveal"></div>
+    <div class="lesson" id="endLesson"></div>
+    <button class="btn" style="max-width:320px" onclick="restart()">⟲ PLAY AGAIN</button>
+  </div>
+</div>
+
+<script>
+/* ============================ AUDIO (chiptune blips) ============================ */
+let AC=null, soundOn=true;
+function ac(){ if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return AC; }
+function tone(freq,start,dur,type,vol){
+  if(!soundOn||!ac())return;
+  const t=AC.currentTime+start, o=AC.createOscillator(), g=AC.createGain();
+  o.type=type||'square'; o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.12,t+0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+dur+0.02);
+}
+const sfx={
+  click:()=>tone(330,0,.07),
+  good:()=>{[523,659,784].forEach((f,i)=>tone(f,i*0.07,.12));},
+  bad:()=>{[392,311,233].forEach((f,i)=>tone(f,i*0.08,.16,'sawtooth'));},
+  mile:()=>{[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*0.09,.16,'square',.14));},
+  end:()=>{[659,523,392,330].forEach((f,i)=>tone(f,i*0.12,.22,'triangle',.13));},
+};
+function toggleSound(){ soundOn=!soundOn; document.getElementById('sndBtn').textContent='🔊 SND:'+(soundOn?'ON':'OFF'); if(soundOn){ac(); sfx.click();} }
+
+/* ============================ STATE ============================ */
+const START={ week:1, season:'SUMMER', cash:1500, customers:0, product:25, morale:75, hype:10,
+  churn:null, leadsBurned:false, oaSigned:false, smsOk:false, emailOk:false, domainsWarmed:false,
+  affiliate:false, offerGood:false, cheapBrand:false, scope:0, firstTester:false, firstPaid:false };
+let S={...START}, idx=0, activeBeat=null, phase='title';
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const mrr=()=>Math.round(S.customers*84);
+
+/* ============================ HUD RENDER ============================ */
+function meter(val,cls){
+  let h='<div class="meter">';
+  for(let i=0;i<10;i++){ h+=`<div class="seg ${cls||''} ${i<Math.round(val/10)?'on':''}"></div>`; }
+  return h+'</div>';
+}
+function hudCell(lab,icon,val,opts={}){
+  return `<div class="stat" data-k="${opts.key||lab}">
+    <div class="lab"><span>${lab}</span><span>${icon}</span></div>
+    <div class="val">${val}</div>${opts.meter!=null?meter(opts.meter,opts.mcls):''}</div>`;
+}
+function moraleCls(){ return S.morale<25?'bad':S.morale<50?'warn':''; }
+function productCls(){ return S.product>=70?'':'warn'; }
+function renderHUD(prev){
+  const hud=document.getElementById('hud');
+  hud.innerHTML =
+    hudCell('CASH','💰','$'+S.cash, {key:'cash'}) +
+    hudCell('CUSTOMERS','🧑',S.customers+'  <span style="font-size:14px;color:#6f8f81">$'+mrr()+'/mo</span>', {key:'customers'}) +
+    hudCell('PRODUCT','🛠️',S.product+'%', {key:'product', meter:S.product, mcls:productCls()}) +
+    hudCell('MORALE','⚡',S.morale, {key:'morale', meter:S.morale, mcls:moraleCls()});
+  if(prev){
+    [['cash',S.cash-prev.cash],['customers',S.customers-prev.customers],['product',S.product-prev.product],['morale',S.morale-prev.morale]]
+    .forEach(([k,d])=>{ if(d!==0){ const el=hud.querySelector(`[data-k="${k}"]`); if(el) el.classList.add(d>0?'flash-up':'flash-down'); }});
+  }
+  const churnTxt = S.churn==null ? '—' : S.churn.toFixed(1)+'%';
+  const f=document.getElementById('flags');
+  f.innerHTML = [
+    flag(S.oaSigned,'FOUNDER AGMT', S.oaSigned?'✅':'⚠ UNSIGNED', !S.oaSigned),
+    flag(S.smsOk,'SMS (A2P)', S.smsOk?'✅':'⬜'),
+    flag(S.domainsWarmed,'EMAIL DOMAINS', S.domainsWarmed?'WARM':'COLD'),
+    flag(S.firstTester,'TESTER', S.firstTester?'✅':'—'),
+    flag(S.firstPaid,'1ST PAID', S.firstPaid?'💳✅':'—'),
+    `<div class="flag ${S.churn!=null&&S.churn>=8?'danger':''}">CHURN ${churnTxt}</div>`,
+    `<div class="flag ${S.scope>=6?'danger':''}">SCOPE-DRIFT ${S.scope}/10</div>`,
+    `<div class="flag">📮 LEADS ${S.leadsBurned?'BURNED':'5k'}</div>`,
+  ].join('');
+}
+function flag(on,label,val,danger){ return `<div class="flag ${on?'on':''} ${danger?'danger':''}">${label} ${val}</div>`; }
+
+/* ============================ EFFECTS HELPER ============================ */
+function fx(obj){
+  const labels=[]; const map={cash:'💰',product:'🛠️',morale:'⚡',hype:'📣',customers:'🧑',scope:'🌀'};
+  for(const k in obj){
+    if(k==='cash'){ S.cash+=obj[k]; }
+    else if(k==='customers'){ S.customers=clamp(S.customers+obj[k],0,9999); }
+    else if(k in S && typeof S[k]==='number'){ S[k]=clamp(S[k]+obj[k],0,100); }
+    if(map[k]){ const v=obj[k]; labels.push(`<div class="delta ${v>0?'up':'down'}">${map[k]} ${v>0?'+':''}${v}</div>`); }
+  }
+  return labels;
+}
+
+/* ============================ BEATS (the campaign) ============================ */
+const R=()=>Math.random();
+const BEATS=[
+  // 1 — opening
+  { spr:'🧭', wk:1, title:'WK 1 — POINT THE TEAM', sub:'Four founders, full summer hours, one half-built app.',
+    text:`The servers <b>hum</b> — but the <bad>booking flow is broken</bad>, the admin page is a buggy mess, and half the dashboard runs on fake data. Your gut screams "SELL!" — but you've got nothing to demo. Where does the sprint go?`,
+    choices:[
+      {label:'Fix the broken booking flow FIRST (the revenue blocker)', go:()=>{ const d=fx({product:18,morale:3});
+        return {ok:1,tag:'SMART',title:'CRITICAL PATH',text:`Pat (product) attacks the booking flow. By Friday a test booking goes end-to-end. THIS is the thing that turns clicks into money. Foundations first.`,d}; }},
+      {label:'Blast thousands of cold emails TODAY — fill the pipeline!', go:()=>{ S.leadsBurned=true; const d=fx({hype:10,morale:-3});
+        return {ok:0,tag:'OUCH',title:'LEADS BURNED',text:`Dozens of prospects click your link… and the booking page faceplants. Those are <bad>one-shot leads, gone forever.</bad> You fired the magazine at a wall.`,d}; }},
+      {label:'Build the referral engine — it\'s our growth plan!', go:()=>{ S.scope+=3; const d=fx({product:4,morale:2});
+        return {ok:0,tag:'PREMATURE',title:'SHINY & USELESS',text:`Jo (finance) starts the commission ledger. Cool — but you have <bad>zero customers to refer and no retention proof.</bad> Every playbook says defer this. Scope-drift +3.`,d}; }},
+    ]},
+  // 2 — founder agreement
+  { spr:'📜', wk:1, title:'THE PAPERWORK NOBODY WANTS', sub:'A founder agreement sits drafted… and unsigned.',
+    text:`Sam (infra/legal) waves the founder agreement + IP assignment at the group. Until it's signed, <warn>nothing is binding and the code isn't legally the company's.</warn> Boring. Important. Your call.`,
+    choices:[
+      {label:'Sign it NOW — vesting + IP assignment, done', go:()=>{ S.oaSigned=true; const d=fx({cash:-50,morale:-2});
+        return {ok:1,tag:'GROWN-UP',title:'BOMB DEFUSED',text:`An hour of e-sign tedium and a small filing fee later, the four of you are legally a company. Future-you exhales.`,d}; }},
+      {label:'Later — we\'re here to BUILD, not do paperwork', go:()=>{ const d=fx({morale:2});
+        return {ok:0,tag:'RISKY',title:'TICK… TICK…',text:`Feels fast and free. But every week the team pours work into <bad>unassigned IP</bad>, the dispute risk grows. This can detonate later.`,d}; }},
+    ]},
+  // 3 — SMS carrier
+  { spr:'📶', wk:2, title:'SMS APPROVAL — THE GATEKEEPER', sub:'SMS reminders need carrier approval. Your first app got rejected.',
+    text:`No A2P clearance = no SMS = your paid tiers are crippled. The resubmission is on the table.`,
+    choices:[
+      {label:'Resubmit carefully — real business docs, clean use-case', go:()=>{ if(R()<0.65){ S.smsOk=true; const d=fx({product:5,morale:3}); return {ok:1,tag:'APPROVED',title:'SMS UNLOCKED 📶',text:`The carrier approves the campaign. SMS reminders are live — your paid tiers just got real.`,d}; } const d=fx({morale:-4}); return {ok:0,tag:'REJECTED',title:'BOUNCED AGAIN',text:`Rejected on a registration technicality. Frustrating, but fixable. SMS still blocked for now.`,d}; }},
+      {label:'Ship email-only for now, revisit SMS later', go:()=>{ const d=fx({product:6,morale:1});
+        return {ok:1,tag:'PRAGMATIC',title:'EMAIL-FIRST',text:`You stop waiting on carriers and ship email reminders. The paid tier loses some shine, but you keep moving. Smart triage.`,d}; }},
+      {label:'Rush it — copy-paste the last app, just resend', go:()=>{ if(R()<0.2){ S.smsOk=true; const d=fx({product:4}); return {ok:1,tag:'LUCKY',title:'SOMEHOW APPROVED',text:`Against the odds, it clears. Don't get used to that.`,d}; } const d=fx({morale:-5}); return {ok:0,tag:'REJECTED',title:'SAME REJECTION',text:`Same app, same rejection. You burned two weeks of review queue for nothing.`,d}; }},
+    ]},
+  // 4 — cold email domains
+  { spr:'📮', wk:2, title:'THE LEADS ARE LOADED', sub:'Thousands of verified cold leads. Cold inboxes need warmup.',
+    text:`Cold email needs 2–4 weeks of <b>domain warmup</b> before the first real send, or it lands in spam. This is your lane.`,
+    choices:[
+      {label:'Warm 5 domains for 3 weeks first (slow is correct)', go:()=>{ S.domainsWarmed=true; const d=fx({hype:5,morale:2});
+        return {ok:1,tag:'DISCIPLINED',title:'WARMING UP',text:`Domains go into warmup. It's quiet now, but in a few weeks your sends will actually <b>reach inboxes</b> instead of spam folders.`,d}; }},
+      {label:'Blast thousands from a fresh domain NOW', go:()=>{ S.leadsBurned=true; const d=fx({hype:6,morale:-3});
+        return {ok:0,tag:'BAD MOVE',title:'STRAIGHT TO SPAM',text:`Fresh domain + big blast = <bad>spam-foldered and domain reputation torched.</bad> A tiny blip of hype, thousands of leads wasted.`,d}; }},
+    ]},
+  // 5 — scope drift
+  { spr:'🌀', wk:3, title:'"WE SHOULD ALSO BUILD…"', sub:'Pat pitches payments + loyalty points + a mobile app.',
+    text:`It's exciting. It's also three features for a product whose <warn>core booking flow barely works.</warn> Scope-drift is the classic startup killer.`,
+    choices:[
+      {label:'"No. Booking first. We ship the spine, then extras."', go:()=>{ const d=fx({product:12,morale:4});
+        return {ok:1,tag:'FOCUS',title:'HELD THE LINE',text:`You kill the side-quests. The team rallies around the critical path and the build accelerates. Discipline is a superpower here.`,d}; }},
+      {label:'"Yes! Let\'s build all of it, we\'ll move fast."', go:()=>{ S.scope+=5; const d=fx({product:3,morale:1,cash:-100});
+        return {ok:0,tag:'SCOPE CREEP',title:'SPREAD THIN',text:`Four people, four directions. Two weeks vanish, nothing ships clean, and the booking flow is <bad>still flaky.</bad> Scope-drift +5.`,d}; }},
+    ]},
+  // 6 — first tester
+  { spr:'✂️', wk:4, title:'THE FIRST TESTER', sub:'A friendly barber shop will try it on real clients — if it works.',
+    text:`A real chair, real walk-ins. If the product holds, it's your first proof. If it crashes mid-cut, that's a bad first impression you can't un-ring.`,
+    choices:[
+      {label:'Onboard them now — put it in front of real bookings', go:()=>{ if(S.product>=55){ S.firstTester=true; const d=fx({morale:8,hype:10}); return {ok:1,mile:1,tag:'MILESTONE',title:'FIRST TESTER LIVE ✂️',text:`The shop takes 4 bookings the first day without a hitch. <b>Real-world proof.</b> The team is buzzing.`,d}; } const d=fx({morale:-8,hype:-4,product:3}); return {ok:0,tag:'CRASHED',title:'IT BROKE MID-CUT',text:`A double-booking bug hits during a real appointment. Embarrassing — but you found a real defect and the owner's still (barely) willing. Polish needed.`,d}; }},
+      {label:'Not ready — polish two more weeks, then onboard', go:()=>{ const d=fx({product:10,morale:1});
+        return {ok:1,tag:'CAUTIOUS',title:'POLISH PASS',text:`You harden the booking flow before exposing it. Safer first impression — but the clock is ticking and validation slips.`,d}; }},
+    ]},
+  // 7 — random event
+  ()=>{
+    const pool=[
+      { spr:'💥', title:'A WILD BUG APPEARS', sub:'An overnight merge re-corrupts the admin page.',
+        text:`You wake up to a broken admin build. Classic. Do you stop the world to fix it, or route around it?`,
+        choices:[
+          {label:'Sam stops everything and fixes it right', go:()=>{ const d=fx({product:6,morale:-3}); return {ok:1,tag:'HANDLED',title:'PATCHED',text:`A grumpy morning, but the admin page is solid again — and Sam adds a test so it can't silently break twice.`,d}; }},
+          {label:'Hack a workaround, keep shipping features', go:()=>{ const d=fx({product:-6,morale:-2}); return {ok:0,tag:'DEBT',title:'DUCT TAPE',text:`The workaround holds for now, but the rot spreads. Tech debt quietly drags the whole build down.`,d}; }},
+        ]},
+      { spr:'📬', title:'A HOT INBOUND', sub:'A salon owner replies: "Can I see it Thursday?"',
+        text:`A warm, ready-to-look prospect — rare gold. But is the product demo-worthy yet?`,
+        choices:[
+          {label:'Take the demo Thursday', go:()=>{ if(S.product>=60){ S.customers+=1; if(S.churn==null)S.churn=4.2; const d=fx({morale:6,cash:600,hype:6}); return {ok:1,mile:0,tag:'CLOSED',title:'SIGNED A SALON 💳',text:`The demo lands. She pays <b>annual up front ($600)</b> on the spot. Your first dollar of real revenue!`,d}; } const d=fx({morale:-5,hype:-3}); return {ok:0,tag:'WHIFF',title:'NOT READY',text:`The demo stumbles on a half-built screen. She says "ping me when it's done." A warm lead cooled.`,d}; }},
+          {label:'Stall a week to prep a tight demo', go:()=>{ const d=fx({product:4,hype:-2}); return {ok:1,tag:'PREP',title:'BOUGHT TIME',text:`You buy a week to polish. Risk: warm leads cool fast. Reward: a demo that won't faceplant.`,d}; }},
+        ]},
+      { spr:'📧', title:'EMAIL PROVIDER CLEARS', sub:'Your email-sending application is approved.',
+        text:`Transactional + outreach email is unblocked. A quiet but real win for both the product and the pipeline.`,
+        choices:[
+          {label:'Wire it into reminders + outreach', go:()=>{ S.emailOk=true; const d=fx({product:5,hype:4}); return {ok:1,tag:'UNLOCKED',title:'EMAIL ONLINE 📧',text:`Reminders send, and your warmed domains have a real pipe. Momentum.`,d}; }},
+        ]},
+    ];
+    return pool[Math.floor(R()*pool.length)];
+  },
+  // 8 — the offer
+  { spr:'🏷️', wk:6, title:'DESIGN THE COLD OFFER', sub:'Same list prices — the OFFER does the work.',
+    text:`A stranger won't commit a big setup fee + 6 months to an unknown tool. How you frame the cold offer decides your conversion.`,
+    choices:[
+      {label:'Money-back guarantee + free setup, annual default', go:()=>{ S.offerGood=true; const d=fx({hype:10,morale:2});
+        return {ok:1,tag:'TEXTBOOK',title:'RISK-REVERSAL',text:`Pay-first (no tire-kickers) but zero risk to them, free onboarding, annual prepay = cash up front. This is the smart play.`,d}; }},
+      {label:'Mandatory big setup fee + 6-month lock, cold', go:()=>{ const d=fx({hype:-8});
+        return {ok:0,tag:'CONVERSION KILLER',title:'A WALL OF FRICTION',text:`You just put a big setup + 6-month wall in front of a cheap sub from a brand nobody's heard of. Cold conversion <bad>cratered.</bad>`,d}; }},
+      {label:'Panic-discount everything to rock bottom', go:()=>{ S.cheapBrand=true; const d=fx({morale:-3,hype:3});
+        return {ok:0,tag:'RACE TO BOTTOM',title:'CHEAPENED THE BRAND',text:`You signal "cheap and desperate," torch your margin, and attract bargain-hunters who churn. Move on TERMS, not price.`,d}; }},
+    ]},
+  // 9 — first close
+  { spr:'💳', wk:7, title:'THE FIRST REAL CLOSE', sub:'Time to convert pipeline into paying customers.',
+    text:`You run a focused sales push at your warmest prospects. Whether it lands depends on the machine you built.`,
+    choices:[
+      {label:'Run the push — call, demo, ask for the sale', go:()=>{
+        let score=0; score+= S.product>=60?2:S.product>=45?1:0; score+= S.domainsWarmed?1:0; score+= S.offerGood?2:0; score-= S.leadsBurned?1:0; score-= S.cheapBrand?1:0;
+        const roll=R()*4 + score;
+        if(roll>=4.5){ const n=2+Math.floor(R()*2); S.customers+=n; if(S.churn==null)S.churn=2.5+R()*2; if(!S.firstPaid){S.firstPaid=true;} const d=fx({customers:0,cash:n*600,morale:10,hype:8});
+          return {ok:1,mile:2,tag:'MILESTONE',title:`CLOSED ${n} CUSTOMERS 💳`,text:`Your machine works: warm domains + clean offer + a demo that holds. <b>${n} businesses pay annual up front.</b> First real revenue is REAL.`,d}; }
+        if(roll>=2.5){ S.customers+=1; if(S.churn==null)S.churn=3.5; if(!S.firstPaid)S.firstPaid=true; const d=fx({cash:600,morale:6,hype:3});
+          return {ok:1,mile:2,tag:'FIRST PAID',title:'ONE PAYING CUSTOMER 💳',text:`It's grindy, but one owner signs annual. The very first paying customer — the number that proves the whole thing.`,d}; }
+        const d=fx({morale:-4,hype:-2});
+        return {ok:0,tag:'NEAR MISS',title:'"LET ME THINK ABOUT IT"',text:`The pitch lands soft — ${S.product<60?'a shaky product':'thin pipeline'} shows. No signatures yet. Fix the weak link and try again.`,d}; }},
+      {label:'Don\'t sell yet — keep building, sell when perfect', go:()=>{ const d=fx({product:8,morale:-1});
+        return {ok:0,tag:'STALLING',title:'PERFECTIONISM TAX',text:`The product gets nicer, but "will they pay?" stays unanswered — and that's the only question that matters. The clock burns.`,d}; }},
+    ]},
+  // 10 — fall arrives
+  { spr:'🍂', wk:10, title:'LIFE GETS BUSY', sub:'The season turns — jobs, school, family. Founder hours just HALVED.', season:'FALL',
+    text:`The summer build window is closing. You can't do everything part-time. How do you spend your shrunken hours?`,
+    choices:[
+      {label:'Ruthless focus: protect ONE goal, protect the team', go:()=>{ const d=fx({morale:5,product:6});
+        return {ok:1,tag:'WISE',title:'ONE THING WELL',text:`You drop the side plates and defend a single priority. Less gets done, but it gets done — and nobody burns out.`,d}; }},
+      {label:'Keep all four plates spinning, just slower', go:()=>{ if(S.churn!=null)S.churn+=2; const d=fx({morale:-10,product:3});
+        return {ok:0,tag:'OVEREXTENDED',title:'EVERYONE\'S FRIED',text:`Half-hours across four fronts means everything limps. Morale tanks and <bad>churn creeps up</bad> as support slips.`,d}; }},
+    ]},
+  // 11 — referral gate
+  { spr:'🤝', wk:12, title:'THE REFERRAL QUESTION', sub:'Your big growth plan — but it\'s gated on churn <5%.',
+    text:()=> S.customers>=2 ? `You finally have customers and a churn read of <b>${(S.churn||0).toFixed(1)}%</b>. Do you flip on the referral program?`
+                            : `You wanted to launch referrals… but with <bad>${S.customers} customer(s)</bad> you have no retention proof. The gate won't open.`,
+    choices:()=> S.customers>=2 ? [
+      {label:'Launch the referral program (earned, not bought)', go:()=>{ if((S.churn||9)<5){ S.affiliate=true; const n=1+Math.floor(R()*2); S.customers+=n; const d=fx({customers:0,cash:n*400,hype:15,morale:5}); return {ok:1,mile:3,tag:'MILESTONE',title:'REFERRAL ENGINE LIVE 🤝',text:`Churn's low enough to be honest about. You flip it on; warm referrers bring <b>${n}</b> new closes. The compounding engine starts turning.`,d}; } const d=fx({morale:-6,hype:-4}); return {ok:0,tag:'TOO EARLY',title:'LEAKY BUCKET',text:`Churn's still high — recruiting referrers now just pours new customers into a leaky bucket. You burn goodwill. Fix retention first.`,d}; }},
+      {label:'Hold — prove retention more before recruiting', go:()=>{ const d=fx({morale:2,product:3}); return {ok:1,tag:'PATIENT',title:'RETENTION FIRST',text:`You resist the shiny channel and shore up onboarding instead. Referrals will compound harder on a product that keeps people.`,d}; }},
+    ] : [
+      {label:'Understood — go get more paying customers first', go:()=>{ const d=fx({morale:1}); return {ok:1,tag:'REALITY',title:'GATE STAYS SHUT',text:`No proof, no program. You point the team back at direct sales — exactly the right order of operations.`,d}; }},
+    ]},
+];
+
+/* ============================ ENGINE ============================ */
+function currentBeat(){ let b=BEATS[idx]; if(typeof b==='function') b=b(); return b; }
+function show(id,on){ document.getElementById(id).style.display = on?'':'none'; }
+
+function loadBeat(){
+  if(idx>=BEATS.length){ return ending(); }
+  activeBeat = currentBeat();
+  if(activeBeat.season){ S.season=activeBeat.season; }
+  if(activeBeat.wk){ S.week=activeBeat.wk; }
+  document.getElementById('seasonTag').textContent = `${S.season} · WK ${S.week}`;
+  document.getElementById('spr').textContent = activeBeat.spr;
+  document.getElementById('sceneTitle').textContent = activeBeat.title;
+  document.getElementById('sceneSub').textContent = activeBeat.sub||'';
+  document.getElementById('sceneText').innerHTML = typeof activeBeat.text==='function'?activeBeat.text():activeBeat.text;
+  const ch=document.getElementById('choices'); ch.innerHTML='';
+  const choices = typeof activeBeat.choices==='function'?activeBeat.choices():activeBeat.choices;
+  activeBeat._choices=choices;
+  choices.forEach((c,i)=>{
+    const b=document.createElement('button'); b.className='choice';
+    b.innerHTML=`<span class="k">${i+1}</span><span>${c.label}</span>`;
+    b.onclick=()=>choose(i); ch.appendChild(b);
+  });
+  phase='scene'; show('scene',true); show('outcome',false);
+  renderHUD();
+}
+
+function choose(i){
+  if(phase!=='scene') return;
+  sfx.click();
+  const prev={cash:S.cash,customers:S.customers,product:S.product,morale:S.morale};
+  const out = activeBeat._choices[i].go();
+  S.cash=Math.round(S.cash);
+  renderHUD(prev);
+  const card=document.getElementById('outCard'), tag=document.getElementById('outTag');
+  let cls = out.mile!=null && out.tag==='MILESTONE' ? 'mile' : (out.ok?'good':'bad');
+  card.className='out-card '+cls; tag.className='out-tag '+cls;
+  tag.textContent = (cls==='mile'?'★ ':'')+out.tag+(cls==='mile'?' ★':'');
+  document.getElementById('outText').innerHTML = `<div class="scene-title" style="font-size:12px;margin-bottom:8px;color:${cls==='bad'?'var(--red)':cls==='mile'?'var(--gold)':'var(--mint2)'}">${out.title}</div>`+out.text;
+  document.getElementById('deltas').innerHTML = (out.d||[]).join('');
+  show('scene',false); show('outcome',true); phase='outcome';
+  if(cls==='mile') sfx.mile(); else if(out.ok) sfx.good(); else sfx.bad();
+  if(!out.ok){ document.getElementById('frame').animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:220,iterations:1}); }
+}
+
+function nextBeat(){
+  if(phase!=='outcome') return;
+  if(S.morale<=0){ return ending('burnout'); }
+  if(S.cash<0){ return ending('bankrupt'); }
+  idx++;
+  loadBeat();
+}
+
+/* ============================ ENDING ============================ */
+function ending(fail){
+  phase='ending'; sfx.end();
+  document.getElementById('ending').classList.remove('hidden');
+  const g=document.getElementById('grade'), t=document.getElementById('endTitle'),
+        sc=document.getElementById('endScore'), rv=document.getElementById('endReveal'), ls=document.getElementById('endLesson');
+  let grade,title,color,lesson;
+
+  if(fail==='burnout'){ grade='☠'; title='TEAM BURNOUT'; color='var(--red)';
+    lesson='LESSON: Four fried founders ship nothing. Morale is a resource — you spent it all and the company stalled.'; }
+  else if(fail==='bankrupt'){ grade='💸'; title='OUT OF CASH'; color='var(--red)';
+    lesson='LESSON: You found the one way to lose money at near-zero burn — by spending it. Costs were never the enemy; you made them one.'; }
+  else {
+    let pts = S.product*0.5 + S.customers*14 + S.morale*0.4 + (S.firstPaid?20:0) + (S.firstTester?10:0) + (S.oaSigned?8:0) + (S.affiliate?12:0) - S.scope*3 - (S.leadsBurned?10:0) - (S.cheapBrand?8:0);
+    if(pts>=110 && S.firstPaid && S.customers>=3){ grade='★★★'; title='RAMEN PROFITABLE'; color='var(--gold)';
+      lesson='LESSON: Foundations → proof → focus. You fixed the spine, sold direct, signed the agreement, and earned the referral engine. This is the run.'; }
+    else if(pts>=70 && S.firstPaid){ grade='★★'; title='SHIPPED + PAYING'; color='var(--mint2)';
+      lesson='LESSON: You shipped a working product and proved someone will pay. That single fact beats a year of planning. Now go get ten more.'; }
+    else if(pts>=45){ grade='★'; title='SHIPPED, BUT SHAKY'; color='var(--mint)';
+      lesson='LESSON: Real progress, but the validation is thin. Tighten retention and close more before you touch the growth channels.'; }
+    else { grade='▢'; title='STILL MID-REBUILD'; color='var(--dim)';
+      lesson='LESSON: The summer slipped through scope-drift and stalling. Pick ONE critical path next time and refuse every "we should also…".'; }
+  }
+  g.textContent=grade; g.style.color=color; t.textContent=title; t.style.color=color;
+  sc.innerHTML = `📅 Reached <b>${S.season} · Week ${S.week}</b><br>
+    🛠️ Product ${S.product}% &nbsp; 🧑 Customers ${S.customers} ($${mrr()}/mo) &nbsp; 💰 $${S.cash}<br>
+    ⚡ Morale ${S.morale} &nbsp; 🌀 Scope-drift ${S.scope}/10 &nbsp; 📉 Churn ${S.churn==null?'—':S.churn.toFixed(1)+'%'}<br>
+    ${S.firstTester?'✅ First tester ':'▢ No tester '} ${S.firstPaid?'· ✅ First paid ':'· ▢ No paying customer '} ${S.oaSigned?'· ✅ Agreement signed':'· ⚠ Agreement UNSIGNED'}`;
+  rv.innerHTML = `<span style="color:var(--gold)">FOG LIFTS:</span> the dice this run were set to <b>true conversion ${ (fail?0.6:(0.5+ (S.domainsWarmed?0.4:0) + (S.offerGood?0.4:0) - (S.leadsBurned?0.3:0))).toFixed(1) }%</b> and <b>true churn ${ (fail? 6 : (S.churn||5)).toFixed(1) }%</b> — exactly the kind of numbers only a real send would reveal.`;
+  ls.textContent=lesson;
+}
+
+/* ============================ CONTROL ============================ */
+function startGame(){
+  ac();
+  document.getElementById('title').classList.add('hidden');
+  S={...START}; idx=0; renderHUD(); loadBeat();
+}
+function restart(){
+  document.getElementById('ending').classList.add('hidden');
+  S={...START}; idx=0; phase='title';
+  document.getElementById('title').classList.remove('hidden');
+  renderHUD();
+}
+
+renderHUD();
+
+document.getElementById('title').addEventListener('click', startGame);
+document.addEventListener('keydown', e=>{
+  if(phase==='title' && (e.key===' '||e.key==='Enter')){ startGame(); }
+  else if(phase==='scene' && ['1','2','3','4'].includes(e.key)){ const n=+e.key-1; if(activeBeat._choices[n]) choose(n); }
+  else if(phase==='outcome' && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); nextBeat(); }
+});
+</script>
+</body>
+</html>
