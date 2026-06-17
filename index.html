@@ -108,7 +108,7 @@
     <div class="out-card" id="outCard"><div class="out-tag" id="outTag"></div><div id="outText"></div><div class="delta-row" id="deltas"></div></div>
     <button class="btn" id="fwdBtn">▶ MOVE FORWARD</button>
   </div>
-  <footer><span>♥ INDIE SAAS · 8-BIT</span><span><button id="sndBtn">🔊 ON</button> <button id="restartBtn">⟲ RESTART</button></span></footer>
+  <footer><span>♥ INDIE SAAS · 8-BIT</span><span><button id="musBtn">🎵 ON</button> <button id="sndBtn">🔊 ON</button> <button id="restartBtn">⟲ RESTART</button></span></footer>
 
   <div class="overlay" id="title">
     <h1>BOOTSTRAP<br>TYCOON</h1>
@@ -138,6 +138,18 @@ let AC=null,soundOn=true;
 function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return AC;}
 function tone(f,s,d,t,v){if(!soundOn||!ac())return;const a=AC.currentTime+s,o=AC.createOscillator(),g=AC.createGain();o.type=t||'square';o.frequency.value=f;g.gain.setValueAtTime(.0001,a);g.gain.exponentialRampToValueAtTime(v||.12,a+.01);g.gain.exponentialRampToValueAtTime(.0001,a+d);o.connect(g);g.connect(AC.destination);o.start(a);o.stop(a+d+.02);}
 const sfx={click:()=>tone(330,0,.06),buy:()=>[523,784].forEach((f,i)=>tone(f,i*.05,.1)),good:()=>[523,659,784].forEach((f,i)=>tone(f,i*.07,.12)),bad:()=>[392,311,233].forEach((f,i)=>tone(f,i*.08,.16,'sawtooth')),mile:()=>[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*.09,.16,'square',.14)),cash:()=>[784,988,1318].forEach((f,i)=>tone(f,i*.08,.14,'square',.13)),fanfare:()=>[523,659,784,1047,1319,1047,1319,1568].forEach((f,i)=>tone(f,i*.1,.2,'square',.14)),end:()=>[659,523,392,330].forEach((f,i)=>tone(f,i*.12,.22,'triangle',.13))};
+/* ---- background music: procedural 8-bit loop (Am–F–C–G), mixed low ---- */
+let musicOn=true,mGain=null,musTimer=null,musStep=0,musNext=0;
+const MBPM=112,MVOL=0.5;
+const NF={C2:65.41,E2:82.41,F2:87.31,G2:98,A2:110,C3:130.81,D3:146.83,F3:174.61,G3:196,A3:220,B3:246.94,C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,B4:493.88,C5:523.25,D5:587.33};
+const MBASS=['A2',0,'A2',0,'A2',0,'E2',0,'F2',0,'F2',0,'F2',0,'C3',0,'C3',0,'C3',0,'C3',0,'G2',0,'G2',0,'G2',0,'G2',0,'D3',0];
+const MARP=['A3','C4','E4','A4','A3','C4','E4','A4','F3','A3','C4','F4','F3','A3','C4','F4','C4','E4','G4','C5','C4','E4','G4','C5','G3','B3','D4','G4','G3','B3','D4','G4'];
+const MLEAD=[0,0,0,0,'E4',0,'G4',0,0,0,'A4',0,0,0,'G4',0,0,0,0,0,'E4',0,'G4','C5',0,0,'D5',0,0,0,'B4',0];
+function mTone(f,time,dur,type,vol){if(!AC||!mGain)return;const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(vol,time+.02);g.gain.exponentialRampToValueAtTime(.0001,time+dur);o.connect(g);g.connect(mGain);o.start(time);o.stop(time+dur+.03);}
+function mStep(i,t){const b=MBASS[i];if(b)mTone(NF[b],t,.42,'triangle',.12);const a=MARP[i];if(a)mTone(NF[a],t,.16,'triangle',.045);const l=MLEAD[i];if(l)mTone(NF[l],t,.3,'square',.08);}
+function mSched(){const sd=(60/MBPM)/2;if(musNext<AC.currentTime)musNext=AC.currentTime+0.05;while(musNext<AC.currentTime+0.14){mStep(musStep,musNext);musNext+=sd;musStep=(musStep+1)%32;}}
+function startMusic(){if(!ac())return;if(AC.state==='suspended')AC.resume();if(!mGain){mGain=AC.createGain();mGain.gain.value=musicOn?MVOL:0;mGain.connect(AC.destination);}if(!musTimer){musNext=AC.currentTime+0.1;musStep=0;musTimer=setInterval(mSched,30);}}
+function toggleMusic(){musicOn=!musicOn;if(mGain)mGain.gain.value=musicOn?MVOL:0;document.getElementById('musBtn').textContent='🎵 '+(musicOn?'ON':'OFF');if(musicOn)startMusic();}
 
 /* ============ DIFFICULTY + FOUNDERS ============ */
 const DIFFS=[
@@ -415,7 +427,7 @@ function chooseFounder(id){S.founderId=id;S.F=FOUNDERS.find(f=>f.id===id);beginG
 function beginGame(){S.cash=Math.round(1500*S.D.cash*FM('cash',1));screen='scene';renderBeat(SUMMER[0]);}
 
 /* ============ CONTROL ============ */
-function startFlow(){ac();S=START();document.getElementById('title').classList.add('hidden');document.getElementById('ending').classList.add('hidden');renderDifficulty();}
+function startFlow(){ac();startMusic();S=START();document.getElementById('title').classList.add('hidden');document.getElementById('ending').classList.add('hidden');renderDifficulty();}
 function restart(){S=START();screen='title';document.getElementById('ending').classList.add('hidden');['base','outwrap','celebrate'].forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById('scene').classList.remove('hidden');document.getElementById('scene').innerHTML='';document.getElementById('title').classList.remove('hidden');renderHUD();}
 function runForward(){if(screen!=='outcome')return;const f=fwd;fwd=null;sfx.click();if(f)f();}
 document.getElementById('fwdBtn').onclick=runForward;
@@ -424,6 +436,7 @@ document.getElementById('againBtn').onclick=restart;
 document.getElementById('restartBtn').onclick=restart;
 document.getElementById('celBtn').onclick=celContinue;
 document.getElementById('sndBtn').onclick=()=>{soundOn=!soundOn;document.getElementById('sndBtn').textContent='🔊 '+(soundOn?'ON':'OFF');if(soundOn){ac();sfx.click();}};
+document.getElementById('musBtn').onclick=toggleMusic;
 document.addEventListener('keydown',e=>{
   if(screen==='title'&&(e.key===' '||e.key==='Enter'))startFlow();
   else if(screen==='scene'&&['1','2','3','4'].includes(e.key)){const el=document.querySelector(`#scene .choice[data-i="${+e.key-1}"]`);if(el)el.click();}
