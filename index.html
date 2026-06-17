@@ -2,508 +2,523 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Bootstrap Tycoon — 8-bit</title>
-<meta name="description" content="An 8-bit startup grind: build a SaaS from broke to paying.">
+<meta name="description" content="An 8-bit startup tycoon: build a SaaS from broke to a $48M exit (or $5M/mo).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#0a0f1e; --panel:#101830; --panel2:#0c1226; --ink:#d8f5e8; --dim:#6f8f81;
-    --mint:#34e2a0; --mint2:#5cffc4; --gold:#ffd23f; --red:#ff4d6d; --blue:#54b6ff;
+    --mint:#34e2a0; --mint2:#5cffc4; --gold:#ffd23f; --red:#ff4d6d; --blue:#54b6ff; --violet:#b48cff;
     --edge:#1f2c4d;
   }
-  *{box-sizing:border-box; margin:0; padding:0}
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
   html,body{height:100%}
   body{
-    background:
-      radial-gradient(120% 90% at 50% 0%, #11193a 0%, var(--bg) 55%, #05070f 100%);
+    background:radial-gradient(120% 90% at 50% 0%, #11193a 0%, var(--bg) 55%, #05070f 100%);
     color:var(--ink); font-family:'VT323',monospace; font-size:22px; line-height:1.05;
-    display:flex; align-items:center; justify-content:center; min-height:100vh; padding:18px;
-    overflow-x:hidden; image-rendering:pixelated; -webkit-font-smoothing:none;
+    display:flex; align-items:flex-start; justify-content:center; min-height:100vh; padding:12px;
+    overflow-x:hidden; image-rendering:pixelated; -webkit-font-smoothing:none; touch-action:manipulation;
   }
   .pixel{font-family:'Press Start 2P',monospace}
-  /* CRT overlay */
   #crt{position:fixed; inset:0; pointer-events:none; z-index:60;
-    background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,.16) 3px, rgba(0,0,0,0) 4px);
+    background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,.15) 3px, rgba(0,0,0,0) 4px);
     mix-blend-mode:multiply;}
   #crt::after{content:""; position:absolute; inset:0;
-    background:radial-gradient(120% 100% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%);}
+    background:radial-gradient(120% 100% at 50% 50%, rgba(0,0,0,0) 62%, rgba(0,0,0,.42) 100%);}
 
-  #frame{width:min(860px,100%); background:var(--panel2);
-    border:4px solid var(--mint); padding:0;
-    box-shadow:0 0 0 4px #0a0f1e, 0 0 0 8px var(--edge), 0 18px 0 8px rgba(0,0,0,.4), 0 0 40px rgba(52,226,160,.25);
-    position:relative;}
+  #frame{width:min(880px,100%); background:var(--panel2); border:4px solid var(--mint);
+    box-shadow:0 0 0 4px #0a0f1e, 0 0 0 8px var(--edge), 0 0 38px rgba(52,226,160,.22); position:relative;}
   .bar-top{display:flex; justify-content:space-between; align-items:center;
-    background:var(--mint); color:#04120c; padding:8px 12px; font-size:11px;}
+    background:var(--mint); color:#04120c; padding:8px 12px;}
   .bar-top .t{font-size:11px; letter-spacing:1px}
   .bar-top .r{font-size:9px}
 
   /* HUD */
-  #hud{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:12px;
-    background:linear-gradient(180deg,#0e1730,#0b1124); border-bottom:4px solid var(--edge);}
-  .stat{background:var(--panel); border:3px solid var(--edge); padding:7px 8px;}
-  .stat .lab{font-family:'Press Start 2P'; font-size:8px; color:var(--dim); display:flex; justify-content:space-between; align-items:center}
-  .stat .val{font-size:26px; margin-top:3px; color:var(--mint2)}
-  .stat.flash-up{animation:fup .5s steps(2)}
-  .stat.flash-down{animation:fdn .5s steps(2)}
+  #hud{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; padding:10px 10px 6px;
+    background:linear-gradient(180deg,#0e1730,#0b1124);}
+  .stat{background:var(--panel); border:3px solid var(--edge); padding:6px 7px;}
+  .stat .lab{font-family:'Press Start 2P'; font-size:7px; color:var(--dim); display:flex; justify-content:space-between; gap:4px}
+  .stat .val{font-size:23px; margin-top:3px; color:var(--mint2); line-height:1}
+  .stat.flash-up{animation:fup .6s steps(2)} .stat.flash-down{animation:fdn .6s steps(2)}
   @keyframes fup{0%,100%{background:var(--panel)}50%{background:#13402c}}
   @keyframes fdn{0%,100%{background:var(--panel)}50%{background:#3d1320}}
-  .meter{display:flex; gap:2px; margin-top:5px}
-  .seg{width:100%; height:9px; background:#08101f; border:1px solid #1a294a}
-  .seg.on{background:var(--mint)}
-  .seg.warn.on{background:var(--gold)}
-  .seg.bad.on{background:var(--red)}
-
-  #flags{display:flex; gap:6px; flex-wrap:wrap; padding:0 12px 12px; background:#0b1124; border-bottom:4px solid var(--edge)}
-  .flag{font-family:'Press Start 2P'; font-size:8px; padding:5px 7px; border:2px solid var(--edge);
-    background:#0e1730; color:var(--dim)}
-  .flag.on{color:#04120c; background:var(--mint); border-color:var(--mint2)}
-  .flag.danger{color:#fff; background:#3a0f1c; border-color:var(--red)}
+  #chips{display:flex; gap:5px; flex-wrap:wrap; padding:0 10px 10px; background:#0b1124; border-bottom:4px solid var(--edge)}
+  .chip{font-family:'Press Start 2P'; font-size:7.5px; padding:5px 6px; border:2px solid var(--edge); background:#0e1730; color:var(--dim)}
+  .chip b{color:var(--mint2)} .chip.warn b{color:var(--gold)} .chip.bad b{color:var(--red)}
+  .goalbar{font-family:'Press Start 2P'; font-size:7.5px; color:#04120c; background:var(--gold); padding:5px 10px; text-align:center; letter-spacing:.5px}
 
   /* Scene */
-  #scene{padding:16px}
-  .sprite-screen{display:flex; align-items:center; gap:14px; background:#070c18;
-    border:3px solid var(--edge); padding:12px; margin-bottom:12px}
-  .spr{font-size:64px; line-height:1; filter:drop-shadow(0 4px 0 rgba(0,0,0,.5)); animation:bob 1.6s ease-in-out infinite}
+  #scene{padding:14px}
+  .sprite-screen{display:flex; align-items:center; gap:13px; background:#070c18; border:3px solid var(--edge); padding:11px; margin-bottom:11px}
+  .spr{font-size:54px; line-height:1; filter:drop-shadow(0 4px 0 rgba(0,0,0,.5)); animation:bob 1.7s ease-in-out infinite}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-  .scene-title{font-family:'Press Start 2P'; font-size:13px; color:var(--gold); line-height:1.5; text-shadow:0 3px 0 #6b4e00}
+  .scene-title{font-family:'Press Start 2P'; font-size:12px; color:var(--gold); line-height:1.5; text-shadow:0 3px 0 #6b4e00}
   .scene-sub{font-size:18px; color:var(--dim); margin-top:6px}
-  #sceneText{font-size:23px; line-height:1.18; margin:6px 2px 14px; color:var(--ink)}
-  #sceneText b{color:var(--mint2)}
-  #sceneText .warn{color:var(--gold)}
-  #sceneText .bad{color:var(--red)}
-
-  .choices{display:flex; flex-direction:column; gap:10px}
-  .choice{font-family:'VT323'; font-size:23px; text-align:left; color:var(--ink);
-    background:var(--panel); border:3px solid var(--edge); padding:11px 13px; cursor:pointer;
-    display:flex; gap:10px; align-items:baseline; transition:none}
-  .choice .k{font-family:'Press Start 2P'; font-size:11px; color:var(--mint); flex:0 0 auto}
-  .choice:hover{background:var(--mint); color:#04120c; border-color:var(--mint2); transform:translate(-2px,-2px); box-shadow:4px 4px 0 #04120c}
+  #sceneText{font-size:22px; line-height:1.2; margin:6px 2px 13px}
+  #sceneText b{color:var(--mint2)} #sceneText .warn{color:var(--gold)} #sceneText .bad{color:var(--red)} #sceneText .g{color:var(--mint2)}
+  .choices{display:flex; flex-direction:column; gap:9px}
+  .choice{font-family:'VT323'; font-size:22px; text-align:left; color:var(--ink); background:var(--panel);
+    border:3px solid var(--edge); padding:12px 13px; cursor:pointer; display:flex; gap:10px; align-items:baseline; min-height:50px}
+  .choice .k{font-family:'Press Start 2P'; font-size:11px; color:var(--mint)}
+  .choice:hover{background:var(--mint); color:#04120c; border-color:var(--mint2)}
   .choice:hover .k{color:#04120c}
-  .choice:active{transform:translate(0,0); box-shadow:none}
+  .choice:active{transform:translateY(2px)}
 
-  /* Outcome */
-  #outcome{padding:16px; display:none}
-  .out-card{border:3px solid; padding:14px; background:#070c18}
-  .out-card.good{border-color:var(--mint)}
-  .out-card.bad{border-color:var(--red)}
-  .out-card.mile{border-color:var(--gold); box-shadow:0 0 24px rgba(255,210,63,.4); animation:pulse 1s steps(3) infinite}
-  @keyframes pulse{0%,100%{box-shadow:0 0 10px rgba(255,210,63,.2)}50%{box-shadow:0 0 30px rgba(255,210,63,.55)}}
+  /* Outcome + buttons */
+  .out-card{border:3px solid; padding:13px; background:#070c18; margin:0 0 4px}
+  .out-card.good{border-color:var(--mint)} .out-card.bad{border-color:var(--red)}
+  .out-card.mile{border-color:var(--gold); animation:pulse 1s steps(3) infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 8px rgba(255,210,63,.2)}50%{box-shadow:0 0 26px rgba(255,210,63,.5)}}
   .out-tag{font-family:'Press Start 2P'; font-size:11px; margin-bottom:8px}
   .out-tag.good{color:var(--mint2)} .out-tag.bad{color:var(--red)} .out-tag.mile{color:var(--gold)}
-  #outText{font-size:23px; line-height:1.18}
-  .delta-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+  #outText{font-size:22px; line-height:1.2}
+  .delta-row{display:flex; gap:7px; flex-wrap:wrap; margin-top:11px}
   .delta{font-family:'Press Start 2P'; font-size:9px; padding:5px 7px; border:2px solid var(--edge); background:#0e1730}
-  .delta.up{color:var(--mint2); border-color:var(--mint)}
-  .delta.down{color:var(--red); border-color:var(--red)}
+  .delta.up{color:var(--mint2); border-color:var(--mint)} .delta.down{color:var(--red); border-color:var(--red)}
 
-  .btn{font-family:'Press Start 2P'; font-size:11px; color:#04120c; background:var(--mint);
-    border:none; padding:13px 16px; cursor:pointer; margin-top:14px; width:100%;
-    box-shadow:0 5px 0 #128055}
-  .btn:hover{background:var(--mint2)}
-  .btn:active{transform:translateY(4px); box-shadow:0 1px 0 #128055}
+  .btn{font-family:'Press Start 2P'; font-size:13px; color:#04120c; background:var(--mint); border:none;
+    padding:18px 16px; cursor:pointer; margin-top:14px; width:100%; box-shadow:0 6px 0 #128055; letter-spacing:1px; min-height:58px}
+  .btn:hover{background:var(--mint2)} .btn:active{transform:translateY(5px); box-shadow:0 1px 0 #128055}
+  .btn.run{background:var(--gold); box-shadow:0 6px 0 #b78f10; color:#231800}
+  .btn.run:hover{background:#ffe27a} .btn.run:active{box-shadow:0 1px 0 #b78f10}
 
-  footer{display:flex; justify-content:space-between; align-items:center; gap:8px;
-    padding:9px 12px; background:#080d1a; border-top:4px solid var(--edge); font-family:'Press Start 2P'; font-size:8px; color:var(--dim)}
-  footer button{font-family:'Press Start 2P'; font-size:8px; color:var(--dim); background:#0e1730; border:2px solid var(--edge); padding:6px 8px; cursor:pointer}
-  footer button:hover{color:var(--mint2); border-color:var(--mint)}
+  /* Home base shop */
+  #base{padding:14px}
+  .base-h{font-family:'Press Start 2P'; font-size:12px; color:var(--mint2); text-align:center; margin-bottom:4px}
+  .base-sub{font-size:18px; color:var(--dim); text-align:center; margin-bottom:12px}
+  .shop-cat{font-family:'Press Start 2P'; font-size:9px; color:var(--gold); margin:14px 0 7px; border-bottom:2px solid var(--edge); padding-bottom:5px}
+  .shop-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .item{background:var(--panel); border:3px solid var(--edge); padding:9px; cursor:pointer; display:flex; flex-direction:column; gap:3px; min-height:78px}
+  .item:hover{border-color:var(--mint)} .item:active{transform:translateY(2px)}
+  .item.owned{border-color:var(--mint); background:#0f2a20; cursor:default}
+  .item.cant{opacity:.42; cursor:not-allowed}
+  .item .nm{font-family:'Press Start 2P'; font-size:8.5px; color:var(--ink); display:flex; gap:5px; align-items:center; line-height:1.4}
+  .item .ds{font-size:16px; color:var(--dim); line-height:1}
+  .item .cost{font-family:'Press Start 2P'; font-size:8px; color:var(--gold); margin-top:auto}
+  .item.owned .cost{color:var(--mint2)}
+  .advisor{font-size:18px; color:var(--violet); background:#120e26; border:2px solid #2a2150; padding:8px 10px; margin-top:12px; line-height:1.1}
 
-  /* Overlays */
-  .overlay{position:absolute; inset:0; background:rgba(5,7,15,.96); z-index:40;
-    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px}
+  footer{display:flex; justify-content:space-between; align-items:center; gap:8px; padding:9px 12px; background:#080d1a;
+    border-top:4px solid var(--edge); font-family:'Press Start 2P'; font-size:8px; color:var(--dim)}
+  footer button{font-family:'Press Start 2P'; font-size:8px; color:var(--dim); background:#0e1730; border:2px solid var(--edge); padding:7px 8px; cursor:pointer}
+  footer button:active{transform:translateY(1px)}
+
+  .overlay{position:absolute; inset:0; background:rgba(5,7,15,.97); z-index:40; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:22px}
   .hidden{display:none}
-  #title h1{font-family:'Press Start 2P'; font-size:30px; color:var(--mint2); line-height:1.4; text-shadow:0 5px 0 #0c7a51, 0 0 24px rgba(92,255,196,.5)}
-  #title .sub{font-family:'Press Start 2P'; font-size:11px; color:var(--gold); margin-top:14px}
-  #title .crew{font-size:60px; margin:18px 0; letter-spacing:6px}
-  #title .blurb{font-size:21px; color:var(--dim); max-width:560px; margin:6px auto 0; line-height:1.15}
+  #title h1{font-family:'Press Start 2P'; font-size:26px; color:var(--mint2); line-height:1.45; text-shadow:0 5px 0 #0c7a51}
+  #title .sub{font-family:'Press Start 2P'; font-size:10px; color:var(--gold); margin-top:13px}
+  #title .crew{font-size:50px; margin:16px 0}
+  #title .blurb{font-size:20px; color:var(--dim); max-width:540px; margin:4px auto 0; line-height:1.15}
   .blink{animation:blink 1s steps(2) infinite}
   @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
-  #start{font-family:'Press Start 2P'; font-size:16px; color:var(--mint2); margin-top:26px}
+  #start{font-family:'Press Start 2P'; font-size:15px; color:var(--mint2); margin-top:24px; border:3px solid var(--mint); padding:14px 20px}
+  #ending h2{font-family:'Press Start 2P'; font-size:17px; line-height:1.5}
+  #ending .score{font-size:21px; color:var(--ink); margin-top:13px; line-height:1.3; max-width:600px}
+  #ending .lesson{font-family:'Press Start 2P'; font-size:9.5px; color:var(--gold); margin-top:16px; line-height:1.7; max-width:620px}
+  .grade{font-family:'Press Start 2P'; font-size:40px; margin:4px 0 2px}
 
-  #ending h2{font-family:'Press Start 2P'; font-size:20px; line-height:1.5}
-  #ending .score{font-size:23px; color:var(--ink); margin-top:14px; line-height:1.25; max-width:600px}
-  #ending .reveal{font-size:19px; color:var(--dim); margin-top:14px; max-width:600px; line-height:1.2}
-  #ending .lesson{font-family:'Press Start 2P'; font-size:10px; color:var(--gold); margin-top:18px; line-height:1.7; max-width:620px}
-  .grade{font-family:'Press Start 2P'; font-size:46px; margin:6px 0 2px}
+  @media(max-width:600px){
+    body{font-size:20px; padding:6px}
+    #hud{grid-template-columns:repeat(2,1fr)}
+    .stat .val{font-size:21px}
+    .spr{font-size:42px} .scene-title{font-size:11px} #sceneText{font-size:21px}
+    .shop-grid{grid-template-columns:1fr}
+    #title h1{font-size:21px} .btn{font-size:12px}
+  }
 </style>
 </head>
 <body>
 <div id="crt"></div>
-
 <div id="frame">
   <div class="bar-top"><span class="t pixel">BOOTSTRAP TYCOON</span><span class="r pixel" id="seasonTag">SUMMER · WK 1</span></div>
-
-  <!-- HUD -->
   <div id="hud"></div>
-  <div id="flags"></div>
+  <div id="chips"></div>
+  <div class="goalbar" id="goalbar">🎯 GOAL: sell for ≥ $48M  •  or reach $5M / month</div>
 
-  <!-- Scene -->
-  <div id="scene">
-    <div class="sprite-screen">
-      <div class="spr" id="spr">🛠️</div>
-      <div>
-        <div class="scene-title" id="sceneTitle">LOADING…</div>
-        <div class="scene-sub" id="sceneSub"></div>
-      </div>
-    </div>
-    <div id="sceneText"></div>
-    <div class="choices" id="choices"></div>
-  </div>
-
-  <!-- Outcome -->
-  <div id="outcome">
-    <div class="out-card" id="outCard">
-      <div class="out-tag" id="outTag"></div>
-      <div id="outText"></div>
-      <div class="delta-row" id="deltas"></div>
-    </div>
-    <button class="btn" id="continueBtn" onclick="nextBeat()">▶ CONTINUE  (ENTER)</button>
+  <div id="scene"></div>      <!-- story beats / events -->
+  <div id="base" class="hidden"></div>  <!-- home base management -->
+  <div id="outwrap" class="hidden" style="padding:14px">
+    <div class="out-card" id="outCard"><div class="out-tag" id="outTag"></div><div id="outText"></div><div class="delta-row" id="deltas"></div></div>
+    <button class="btn" id="fwdBtn">▶ MOVE FORWARD</button>
   </div>
 
   <footer>
-    <span>♥ INDIE SAAS · 8-BIT EDITION</span>
-    <span>
-      <button id="sndBtn" onclick="toggleSound()">🔊 SND:ON</button>
-      <button onclick="restart()">⟲ RESTART</button>
-    </span>
+    <span>♥ INDIE SAAS · 8-BIT</span>
+    <span><button id="sndBtn">🔊 ON</button> <button id="restartBtn">⟲ RESTART</button></span>
   </footer>
 
-  <!-- Title overlay -->
   <div class="overlay" id="title">
     <h1>BOOTSTRAP<br>TYCOON</h1>
-    <div class="sub">▚ AN 8-BIT STARTUP GRIND ▞</div>
+    <div class="sub">▚ AN 8-BIT STARTUP TYCOON ▞</div>
     <div class="crew">🧑‍💻🤝🛡️💰</div>
-    <div class="blurb">4 broke founders. 0 customers. A half-built app. A list of cold leads in the chamber. You have one summer before life steals your hours. Ship the product. Land a paying customer. Don't blow it.</div>
-    <div id="start" class="blink">▶ PRESS START</div>
+    <div class="blurb">Build a SaaS from 4 broke founders to a fortune. Survive the summer, then scale for 3 years — hire, upgrade, fend off rivals & buyers. Win by selling for <b style="color:#ffd23f">$48M</b> — or reaching <b style="color:#ffd23f">$5M / month</b>.</div>
+    <div id="start" class="blink">▶ PRESS START / TAP</div>
   </div>
 
-  <!-- Ending overlay -->
   <div class="overlay hidden" id="ending">
     <div class="grade" id="grade">★</div>
     <h2 id="endTitle"></h2>
     <div class="score" id="endScore"></div>
-    <div class="reveal" id="endReveal"></div>
     <div class="lesson" id="endLesson"></div>
-    <button class="btn" style="max-width:320px" onclick="restart()">⟲ PLAY AGAIN</button>
+    <button class="btn" style="max-width:320px" id="againBtn">⟲ PLAY AGAIN</button>
   </div>
 </div>
 
 <script>
-/* ============================ AUDIO (chiptune blips) ============================ */
+/* ===================== AUDIO ===================== */
 let AC=null, soundOn=true;
-function ac(){ if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } return AC; }
-function tone(freq,start,dur,type,vol){
-  if(!soundOn||!ac())return;
-  const t=AC.currentTime+start, o=AC.createOscillator(), g=AC.createGain();
-  o.type=type||'square'; o.frequency.value=freq;
-  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol||0.12,t+0.01);
-  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-  o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+dur+0.02);
-}
-const sfx={
-  click:()=>tone(330,0,.07),
-  good:()=>{[523,659,784].forEach((f,i)=>tone(f,i*0.07,.12));},
-  bad:()=>{[392,311,233].forEach((f,i)=>tone(f,i*0.08,.16,'sawtooth'));},
-  mile:()=>{[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*0.09,.16,'square',.14));},
-  end:()=>{[659,523,392,330].forEach((f,i)=>tone(f,i*0.12,.22,'triangle',.13));},
-};
-function toggleSound(){ soundOn=!soundOn; document.getElementById('sndBtn').textContent='🔊 SND:'+(soundOn?'ON':'OFF'); if(soundOn){ac(); sfx.click();} }
+function ac(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return AC; }
+function tone(f,s,d,t,v){ if(!soundOn||!ac())return; const a=AC.currentTime+s,o=AC.createOscillator(),g=AC.createGain();
+  o.type=t||'square'; o.frequency.value=f; g.gain.setValueAtTime(.0001,a); g.gain.exponentialRampToValueAtTime(v||.12,a+.01);
+  g.gain.exponentialRampToValueAtTime(.0001,a+d); o.connect(g); g.connect(AC.destination); o.start(a); o.stop(a+d+.02); }
+const sfx={ click:()=>tone(330,0,.06), buy:()=>{[523,784].forEach((f,i)=>tone(f,i*.05,.1))},
+  good:()=>[523,659,784].forEach((f,i)=>tone(f,i*.07,.12)), bad:()=>[392,311,233].forEach((f,i)=>tone(f,i*.08,.16,'sawtooth')),
+  mile:()=>[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*.09,.16,'square',.14)),
+  cash:()=>[784,988,1318].forEach((f,i)=>tone(f,i*.08,.14,'square',.13)), end:()=>[659,523,392,330].forEach((f,i)=>tone(f,i*.12,.22,'triangle',.13)) };
 
-/* ============================ STATE ============================ */
-const START={ week:1, season:'SUMMER', cash:1500, customers:0, product:25, morale:75, hype:10,
-  churn:null, leadsBurned:false, oaSigned:false, smsOk:false, emailOk:false, domainsWarmed:false,
-  affiliate:false, offerGood:false, cheapBrand:false, scope:0, firstTester:false, firstPaid:false };
-let S={...START}, idx=0, activeBeat=null, phase='title';
+/* ===================== STATE ===================== */
+const START=()=>({ phase:'summer', month:0, cash:1500, customers:0, arpu:0, churn:6.5, product:25, brand:8, morale:75,
+  staff:{eng:0,sales:0,support:0,mkt:0}, upg:{}, equitySold:0, lastGrowth:0, sumIdx:0, q:0,
+  leadsBurned:false, oaSigned:false, domainsWarmed:false, offerGood:false, cheapBrand:false, firstTester:false, scope:0,
+  lastOfferQ:-9, peakOffer:0, vcTaken:false });
+let S=START(), screen='title', activeChoices=null, fwd=null;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const mrr=()=>Math.round(S.customers*84);
+const mrr=()=>Math.round(S.customers*S.arpu);
+const totalStaff=()=>S.staff.eng+S.staff.sales+S.staff.support+S.staff.mkt;
+function valuation(){ const arr=mrr()*12; let m=4+S.lastGrowth*8-Math.max(0,S.churn-4)*0.3; m=clamp(m,2.5,12); return Math.round(arr*m); }
+function money(n){ n=Math.round(n); const s=n<0?'-':''; n=Math.abs(n);
+  if(n>=1e6) return s+'$'+(n/1e6).toFixed(n>=1e7?0:1)+'M';
+  if(n>=1e3) return s+'$'+(n/1e3).toFixed(n>=1e5?0:1)+'k'; return s+'$'+n; }
+function num(n){ return Math.round(n).toLocaleString('en-US'); }
 
-/* ============================ HUD RENDER ============================ */
-function meter(val,cls){
-  let h='<div class="meter">';
-  for(let i=0;i<10;i++){ h+=`<div class="seg ${cls||''} ${i<Math.round(val/10)?'on':''}"></div>`; }
-  return h+'</div>';
-}
-function hudCell(lab,icon,val,opts={}){
-  return `<div class="stat" data-k="${opts.key||lab}">
-    <div class="lab"><span>${lab}</span><span>${icon}</span></div>
-    <div class="val">${val}</div>${opts.meter!=null?meter(opts.meter,opts.mcls):''}</div>`;
-}
-function moraleCls(){ return S.morale<25?'bad':S.morale<50?'warn':''; }
-function productCls(){ return S.product>=70?'':'warn'; }
+/* ===================== HUD ===================== */
+function chip(label,val,cls){ return `<div class="chip ${cls||''}">${label} <b>${val}</b></div>`; }
 function renderHUD(prev){
+  document.getElementById('seasonTag').textContent = S.phase==='summer' ? `SUMMER · WK ${1+S.month}` : `YEAR ${1+Math.floor(S.q/4)} · Q${1+(S.q%4)}`;
   const hud=document.getElementById('hud');
-  hud.innerHTML =
-    hudCell('CASH','💰','$'+S.cash, {key:'cash'}) +
-    hudCell('CUSTOMERS','🧑',S.customers+'  <span style="font-size:14px;color:#6f8f81">$'+mrr()+'/mo</span>', {key:'customers'}) +
-    hudCell('PRODUCT','🛠️',S.product+'%', {key:'product', meter:S.product, mcls:productCls()}) +
-    hudCell('MORALE','⚡',S.morale, {key:'morale', meter:S.morale, mcls:moraleCls()});
-  if(prev){
-    [['cash',S.cash-prev.cash],['customers',S.customers-prev.customers],['product',S.product-prev.product],['morale',S.morale-prev.morale]]
-    .forEach(([k,d])=>{ if(d!==0){ const el=hud.querySelector(`[data-k="${k}"]`); if(el) el.classList.add(d>0?'flash-up':'flash-down'); }});
-  }
-  const churnTxt = S.churn==null ? '—' : S.churn.toFixed(1)+'%';
-  const f=document.getElementById('flags');
-  f.innerHTML = [
-    flag(S.oaSigned,'FOUNDER AGMT', S.oaSigned?'✅':'⚠ UNSIGNED', !S.oaSigned),
-    flag(S.smsOk,'SMS (A2P)', S.smsOk?'✅':'⬜'),
-    flag(S.domainsWarmed,'EMAIL DOMAINS', S.domainsWarmed?'WARM':'COLD'),
-    flag(S.firstTester,'TESTER', S.firstTester?'✅':'—'),
-    flag(S.firstPaid,'1ST PAID', S.firstPaid?'💳✅':'—'),
-    `<div class="flag ${S.churn!=null&&S.churn>=8?'danger':''}">CHURN ${churnTxt}</div>`,
-    `<div class="flag ${S.scope>=6?'danger':''}">SCOPE-DRIFT ${S.scope}/10</div>`,
-    `<div class="flag">📮 LEADS ${S.leadsBurned?'BURNED':'5k'}</div>`,
+  const cells=[['cash','💰','CASH',money(S.cash)],['mrr','📈','MRR/mo',money(mrr())],['cust','🧑','CUSTOMERS',num(S.customers)],['val','🏷️','VALUATION',money(valuation())]];
+  hud.innerHTML=cells.map(c=>`<div class="stat" data-k="${c[0]}"><div class="lab"><span>${c[2]}</span><span>${c[1]}</span></div><div class="val">${c[3]}</div></div>`).join('');
+  if(prev){ [['cash',S.cash-prev.cash],['cust',S.customers-prev.cust],['mrr',mrr()-prev.mrr],['val',valuation()-prev.val]].forEach(([k,d])=>{ if(d!==0){const el=hud.querySelector(`[data-k="${k}"]`); if(el)el.classList.add(d>0?'flash-up':'flash-down');}}); }
+  const ch=document.getElementById('chips');
+  ch.innerHTML = [
+    chip('🛠️PROD',S.product+'%', S.product<50?'warn':''),
+    chip('📣BRAND',Math.round(S.brand)+'%'),
+    chip('⚡MOOD',S.morale, S.morale<30?'bad':S.morale<50?'warn':''),
+    chip('📉CHURN',S.churn.toFixed(1)+'%', S.churn>=8?'bad':''),
+    chip('💵ARPU',S.arpu?('$'+S.arpu):'—'),
+    chip('👥TEAM', totalStaff()? (S.staff.eng+'e/'+S.staff.sales+'s/'+S.staff.support+'su/'+S.staff.mkt+'m') : '0'),
+    S.equitySold>0? chip('🪙EQ SOLD',Math.round(S.equitySold*100)+'%','warn'):''
   ].join('');
+  document.getElementById('goalbar').style.display = S.phase==='summer' ? 'none':'block';
 }
-function flag(on,label,val,danger){ return `<div class="flag ${on?'on':''} ${danger?'danger':''}">${label} ${val}</div>`; }
+function snap(){ return {cash:S.cash,cust:S.customers,mrr:mrr(),val:valuation()}; }
 
-/* ============================ EFFECTS HELPER ============================ */
-function fx(obj){
-  const labels=[]; const map={cash:'💰',product:'🛠️',morale:'⚡',hype:'📣',customers:'🧑',scope:'🌀'};
-  for(const k in obj){
-    if(k==='cash'){ S.cash+=obj[k]; }
-    else if(k==='customers'){ S.customers=clamp(S.customers+obj[k],0,9999); }
-    else if(k in S && typeof S[k]==='number'){ S[k]=clamp(S[k]+obj[k],0,100); }
-    if(map[k]){ const v=obj[k]; labels.push(`<div class="delta ${v>0?'up':'down'}">${map[k]} ${v>0?'+':''}${v}</div>`); }
-  }
-  return labels;
+/* ===================== EFFECTS ===================== */
+function fx(o){ const lab=[], map={cash:'💰',product:'🛠️',morale:'⚡',brand:'📣',customers:'🧑',scope:'🌀',arpu:'💵',churn:'📉'};
+  for(const k in o){ if(k==='cash'){S.cash+=o[k];} else if(k==='customers'){S.customers=Math.max(0,S.customers+o[k]);}
+    else if(k==='arpu'){S.arpu=Math.max(0,S.arpu+o[k]);} else if(k in S && typeof S[k]==='number'){S[k]=clamp(S[k]+o[k],0,100);}
+    if(map[k]){const v=o[k]; lab.push(`<div class="delta ${v>0?'up':'down'}">${map[k]} ${v>0?'+':''}${k==='cash'?money(v).replace('$',''):(k==='customers'?num(v):v)}${k==='cash'?'$':''}</div>`);} }
+  return lab; }
+
+/* ===================== SCREENS ===================== */
+function showScene(){ ['scene'].forEach(id=>document.getElementById(id).classList.remove('hidden')); document.getElementById('base').classList.add('hidden'); document.getElementById('outwrap').classList.add('hidden'); }
+function showBase(){ document.getElementById('base').classList.remove('hidden'); document.getElementById('scene').classList.add('hidden'); document.getElementById('outwrap').classList.add('hidden'); }
+function showOut(out,next){
+  screen='outcome'; fwd=next;
+  const cls = out.mile?'mile':(out.ok?'good':'bad');
+  document.getElementById('outCard').className='out-card '+cls;
+  const tag=document.getElementById('outTag'); tag.className='out-tag '+cls; tag.textContent=(cls==='mile'?'★ ':'')+out.tag+(cls==='mile'?' ★':'');
+  document.getElementById('outText').innerHTML=`<div class="scene-title" style="font-size:11px;margin-bottom:8px;color:${cls==='bad'?'var(--red)':cls==='mile'?'var(--gold)':'var(--mint2)'}">${out.title}</div>`+out.text;
+  document.getElementById('deltas').innerHTML=(out.d||[]).join('');
+  document.getElementById('scene').classList.add('hidden'); document.getElementById('base').classList.add('hidden');
+  document.getElementById('outwrap').classList.remove('hidden');
+  if(cls==='mile')sfx.mile(); else if(out.ok)sfx.good(); else sfx.bad();
+  if(!out.ok&&!out.mile) document.getElementById('frame').animate([{transform:'translateX(0)'},{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:200});
+  renderHUD();
 }
+function renderBeat(b){
+  screen='scene'; activeChoices = typeof b.choices==='function'?b.choices():b.choices;
+  document.getElementById('scene').innerHTML =
+    `<div class="sprite-screen"><div class="spr">${b.spr}</div><div><div class="scene-title">${b.title}</div><div class="scene-sub">${b.sub||''}</div></div></div>`+
+    `<div id="sceneText">${typeof b.text==='function'?b.text():b.text}</div>`+
+    `<div class="choices">`+activeChoices.map((c,i)=>`<button class="choice" data-i="${i}"><span class="k">${i+1}</span><span>${c.label}</span></button>`).join('')+`</div>`;
+  document.querySelectorAll('#scene .choice').forEach(el=>el.onclick=()=>pickChoice(+el.dataset.i));
+  showScene(); renderHUD();
+}
+function pickChoice(i){ if(screen!=='scene')return; sfx.click(); const prev=snap(); const out=activeChoices[i].go();
+  if(!out||screen==='ending') return; // a choice that ended the game (accepted an exit) already rendered
+  S.cash=Math.round(S.cash); S.arpu=Math.round(S.arpu);
+  renderHUD(prev); out.d=out.d||[]; showOut(out, out._next||afterBeat); }
 
-/* ============================ BEATS (the campaign) ============================ */
-const R=()=>Math.random();
-const BEATS=[
-  // 1 — opening
-  { spr:'🧭', wk:1, title:'WK 1 — POINT THE TEAM', sub:'Four founders, full summer hours, one half-built app.',
-    text:`The servers <b>hum</b> — but the <bad>booking flow is broken</bad>, the admin page is a buggy mess, and half the dashboard runs on fake data. Your gut screams "SELL!" — but you've got nothing to demo. Where does the sprint go?`,
+/* ===================== PHASE 1 — SUMMER ===================== */
+const SUMMER=[
+  { spr:'🧭', title:'WK 1 — POINT THE TEAM', sub:'4 founders, one summer, a half-built app.',
+    text:`Servers <b>hum</b>, but the <bad>booking flow is broken</bad> and half the app is fake data. Your gut says "SELL!" — but there's nothing to demo. Where does the sprint go?`,
     choices:[
-      {label:'Fix the broken booking flow FIRST (the revenue blocker)', go:()=>{ const d=fx({product:18,morale:3});
-        return {ok:1,tag:'SMART',title:'CRITICAL PATH',text:`Pat (product) attacks the booking flow. By Friday a test booking goes end-to-end. THIS is the thing that turns clicks into money. Foundations first.`,d}; }},
-      {label:'Blast thousands of cold emails TODAY — fill the pipeline!', go:()=>{ S.leadsBurned=true; const d=fx({hype:10,morale:-3});
-        return {ok:0,tag:'OUCH',title:'LEADS BURNED',text:`Dozens of prospects click your link… and the booking page faceplants. Those are <bad>one-shot leads, gone forever.</bad> You fired the magazine at a wall.`,d}; }},
-      {label:'Build the referral engine — it\'s our growth plan!', go:()=>{ S.scope+=3; const d=fx({product:4,morale:2});
-        return {ok:0,tag:'PREMATURE',title:'SHINY & USELESS',text:`Jo (finance) starts the commission ledger. Cool — but you have <bad>zero customers to refer and no retention proof.</bad> Every playbook says defer this. Scope-drift +3.`,d}; }},
+      {label:'Fix the booking flow FIRST (the revenue blocker)', go:()=>({ok:1,tag:'SMART',title:'CRITICAL PATH',text:`Pat ships an end-to-end booking by Friday. This is the thing that turns clicks into money.`,d:fx({product:20,morale:3})})},
+      {label:'Blast cold emails NOW to fill the pipeline', go:()=>{S.leadsBurned=true; return {ok:0,tag:'OUCH',title:'LEADS BURNED',text:`Prospects click… the page faceplants. <bad>One-shot leads, gone.</bad>`,d:fx({brand:6,morale:-3})};}},
+      {label:'Build the referral engine — our growth plan!', go:()=>{S.scope+=3; return {ok:0,tag:'PREMATURE',title:'SHINY & USELESS',text:`A commission ledger for the <bad>zero customers you have.</bad> Every playbook says defer this.`,d:fx({product:4,morale:1})};}},
     ]},
-  // 2 — founder agreement
-  { spr:'📜', wk:1, title:'THE PAPERWORK NOBODY WANTS', sub:'A founder agreement sits drafted… and unsigned.',
-    text:`Sam (infra/legal) waves the founder agreement + IP assignment at the group. Until it's signed, <warn>nothing is binding and the code isn't legally the company's.</warn> Boring. Important. Your call.`,
+  { spr:'📜', title:'THE FOUNDER AGREEMENT', sub:'Drafted… and unsigned.',
+    text:`Sam waves the founder agreement + IP assignment. Until it's signed, <warn>nothing is binding and the code isn't legally yours.</warn>`,
     choices:[
-      {label:'Sign it NOW — vesting + IP assignment, done', go:()=>{ S.oaSigned=true; const d=fx({cash:-50,morale:-2});
-        return {ok:1,tag:'GROWN-UP',title:'BOMB DEFUSED',text:`An hour of e-sign tedium and a small filing fee later, the four of you are legally a company. Future-you exhales.`,d}; }},
-      {label:'Later — we\'re here to BUILD, not do paperwork', go:()=>{ const d=fx({morale:2});
-        return {ok:0,tag:'RISKY',title:'TICK… TICK…',text:`Feels fast and free. But every week the team pours work into <bad>unassigned IP</bad>, the dispute risk grows. This can detonate later.`,d}; }},
+      {label:'Sign it NOW — vesting + IP, done', go:()=>{S.oaSigned=true; return {ok:1,tag:'GROWN-UP',title:'BOMB DEFUSED',text:`Legally a company. Future-you exhales — and your eventual exit just got a lot cleaner.`,d:fx({cash:-50,morale:-2})};}},
+      {label:'Later — we\'re here to BUILD', go:()=>({ok:0,tag:'RISKY',title:'TICK… TICK…',text:`Free and fast now. But <bad>unassigned IP</bad> is a landmine a future buyer will find.`,d:fx({morale:2})})},
     ]},
-  // 3 — SMS carrier
-  { spr:'📶', wk:2, title:'SMS APPROVAL — THE GATEKEEPER', sub:'SMS reminders need carrier approval. Your first app got rejected.',
-    text:`No A2P clearance = no SMS = your paid tiers are crippled. The resubmission is on the table.`,
+  { spr:'🏗️', title:'BUILD THE CORE', sub:'Booking works. What ships next?',
+    text:`You have two weeks before launch. Spend them where?`,
     choices:[
-      {label:'Resubmit carefully — real business docs, clean use-case', go:()=>{ if(R()<0.65){ S.smsOk=true; const d=fx({product:5,morale:3}); return {ok:1,tag:'APPROVED',title:'SMS UNLOCKED 📶',text:`The carrier approves the campaign. SMS reminders are live — your paid tiers just got real.`,d}; } const d=fx({morale:-4}); return {ok:0,tag:'REJECTED',title:'BOUNCED AGAIN',text:`Rejected on a registration technicality. Frustrating, but fixable. SMS still blocked for now.`,d}; }},
-      {label:'Ship email-only for now, revisit SMS later', go:()=>{ const d=fx({product:6,morale:1});
-        return {ok:1,tag:'PRAGMATIC',title:'EMAIL-FIRST',text:`You stop waiting on carriers and ship email reminders. The paid tier loses some shine, but you keep moving. Smart triage.`,d}; }},
-      {label:'Rush it — copy-paste the last app, just resend', go:()=>{ if(R()<0.2){ S.smsOk=true; const d=fx({product:4}); return {ok:1,tag:'LUCKY',title:'SOMEHOW APPROVED',text:`Against the odds, it clears. Don't get used to that.`,d}; } const d=fx({morale:-5}); return {ok:0,tag:'REJECTED',title:'SAME REJECTION',text:`Same app, same rejection. You burned two weeks of review queue for nothing.`,d}; }},
+      {label:'Reminders + payments (the boring money features)', go:()=>({ok:1,tag:'FOCUS',title:'THE SPINE',text:`SMS/email reminders + card payments. Unsexy, exactly what owners pay for.`,d:fx({product:16,arpu:0,morale:2})})},
+      {label:'Chase a flashy AI gimmick for the demo', go:()=>{S.scope+=4; return {ok:0,tag:'SCOPE CREEP',title:'SHINY DETOUR',text:`A cool demo toy, but the core still wobbles. Scope-drift climbs.`,d:fx({product:5,brand:4,morale:1})};}},
+      {label:'Outsource a rushed build to move faster', go:()=>({ok:0,tag:'DEBT',title:'DUCT TAPE',text:`It "works," but the code is a haunted house you'll pay for later.`,d:fx({product:11,churn:1.5,cash:-400})})},
     ]},
-  // 4 — cold email domains
-  { spr:'📮', wk:2, title:'THE LEADS ARE LOADED', sub:'Thousands of verified cold leads. Cold inboxes need warmup.',
-    text:`Cold email needs 2–4 weeks of <b>domain warmup</b> before the first real send, or it lands in spam. This is your lane.`,
+  { spr:'🏷️', title:'DESIGN THE COLD OFFER', sub:'Same prices — the offer does the work.',
+    text:`A stranger won't commit a big setup fee + lock-in to an unknown tool. How do you frame it?`,
     choices:[
-      {label:'Warm 5 domains for 3 weeks first (slow is correct)', go:()=>{ S.domainsWarmed=true; const d=fx({hype:5,morale:2});
-        return {ok:1,tag:'DISCIPLINED',title:'WARMING UP',text:`Domains go into warmup. It's quiet now, but in a few weeks your sends will actually <b>reach inboxes</b> instead of spam folders.`,d}; }},
-      {label:'Blast thousands from a fresh domain NOW', go:()=>{ S.leadsBurned=true; const d=fx({hype:6,morale:-3});
-        return {ok:0,tag:'BAD MOVE',title:'STRAIGHT TO SPAM',text:`Fresh domain + big blast = <bad>spam-foldered and domain reputation torched.</bad> A tiny blip of hype, thousands of leads wasted.`,d}; }},
+      {label:'Money-back guarantee + free setup, annual default', go:()=>{S.offerGood=true; return {ok:1,tag:'TEXTBOOK',title:'RISK-REVERSAL',text:`Zero risk to them, cash up front for you. The smart play.`,d:fx({brand:10,morale:2})};}},
+      {label:'Big setup fee + 6-month lock', go:()=>({ok:0,tag:'KILLER',title:'WALL OF FRICTION',text:`A wall in front of an unknown brand. Cold conversion <bad>craters.</bad>`,d:fx({brand:-6})})},
+      {label:'Panic-discount to rock bottom', go:()=>{S.cheapBrand=true; return {ok:0,tag:'RACE TO BOTTOM',title:'CHEAPENED',text:`You attract churny bargain-hunters and torch your margin.`,d:fx({brand:3,morale:-3})};}},
     ]},
-  // 5 — scope drift
-  { spr:'🌀', wk:3, title:'"WE SHOULD ALSO BUILD…"', sub:'Pat pitches payments + loyalty points + a mobile app.',
-    text:`It's exciting. It's also three features for a product whose <warn>core booking flow barely works.</warn> Scope-drift is the classic startup killer.`,
+  { spr:'✂️', title:'THE FIRST TESTER', sub:'A friendly barber shop will go live — if it works.',
+    text:`Real chairs, real walk-ins. Proof if it holds; a black eye if it crashes.`,
     choices:[
-      {label:'"No. Booking first. We ship the spine, then extras."', go:()=>{ const d=fx({product:12,morale:4});
-        return {ok:1,tag:'FOCUS',title:'HELD THE LINE',text:`You kill the side-quests. The team rallies around the critical path and the build accelerates. Discipline is a superpower here.`,d}; }},
-      {label:'"Yes! Let\'s build all of it, we\'ll move fast."', go:()=>{ S.scope+=5; const d=fx({product:3,morale:1,cash:-100});
-        return {ok:0,tag:'SCOPE CREEP',title:'SPREAD THIN',text:`Four people, four directions. Two weeks vanish, nothing ships clean, and the booking flow is <bad>still flaky.</bad> Scope-drift +5.`,d}; }},
+      {label:'Onboard them now', go:()=>{ if(S.product>=55){S.firstTester=true; return {ok:1,mile:1,tag:'MILESTONE',title:'FIRST TESTER LIVE ✂️',text:`A full day of real bookings, zero hitches. <b>Proof.</b>`,d:fx({morale:8,brand:10})};} return {ok:0,tag:'CRASHED',title:'BROKE MID-CUT',text:`A double-booking bug during a real appointment. You found a real defect — the hard way.`,d:fx({morale:-7,product:4})};}},
+      {label:'Polish two more weeks first', go:()=>({ok:1,tag:'CAUTIOUS',title:'POLISH PASS',text:`Safer first impression — but validation slips and the clock burns.`,d:fx({product:12,morale:1})})},
     ]},
-  // 6 — first tester
-  { spr:'✂️', wk:4, title:'THE FIRST TESTER', sub:'A friendly barber shop will try it on real clients — if it works.',
-    text:`A real chair, real walk-ins. If the product holds, it's your first proof. If it crashes mid-cut, that's a bad first impression you can't un-ring.`,
+  { spr:'🚀', title:'LAUNCH PUSH', sub:'Summer\'s end. Convert the work into customers.',
+    text:`Everything you built funnels into one launch sprint. How hard do you push?`,
     choices:[
-      {label:'Onboard them now — put it in front of real bookings', go:()=>{ if(S.product>=55){ S.firstTester=true; const d=fx({morale:8,hype:10}); return {ok:1,mile:1,tag:'MILESTONE',title:'FIRST TESTER LIVE ✂️',text:`The shop takes 4 bookings the first day without a hitch. <b>Real-world proof.</b> The team is buzzing.`,d}; } const d=fx({morale:-8,hype:-4,product:3}); return {ok:0,tag:'CRASHED',title:'IT BROKE MID-CUT',text:`A double-booking bug hits during a real appointment. Embarrassing — but you found a real defect and the owner's still (barely) willing. Polish needed.`,d}; }},
-      {label:'Not ready — polish two more weeks, then onboard', go:()=>{ const d=fx({product:10,morale:1});
-        return {ok:1,tag:'CAUTIOUS',title:'POLISH PASS',text:`You harden the booking flow before exposing it. Safer first impression — but the clock is ticking and validation slips.`,d}; }},
-    ]},
-  // 7 — random event
-  ()=>{
-    const pool=[
-      { spr:'💥', title:'A WILD BUG APPEARS', sub:'An overnight merge re-corrupts the admin page.',
-        text:`You wake up to a broken admin build. Classic. Do you stop the world to fix it, or route around it?`,
-        choices:[
-          {label:'Sam stops everything and fixes it right', go:()=>{ const d=fx({product:6,morale:-3}); return {ok:1,tag:'HANDLED',title:'PATCHED',text:`A grumpy morning, but the admin page is solid again — and Sam adds a test so it can't silently break twice.`,d}; }},
-          {label:'Hack a workaround, keep shipping features', go:()=>{ const d=fx({product:-6,morale:-2}); return {ok:0,tag:'DEBT',title:'DUCT TAPE',text:`The workaround holds for now, but the rot spreads. Tech debt quietly drags the whole build down.`,d}; }},
-        ]},
-      { spr:'📬', title:'A HOT INBOUND', sub:'A salon owner replies: "Can I see it Thursday?"',
-        text:`A warm, ready-to-look prospect — rare gold. But is the product demo-worthy yet?`,
-        choices:[
-          {label:'Take the demo Thursday', go:()=>{ if(S.product>=60){ S.customers+=1; if(S.churn==null)S.churn=4.2; const d=fx({morale:6,cash:600,hype:6}); return {ok:1,mile:0,tag:'CLOSED',title:'SIGNED A SALON 💳',text:`The demo lands. She pays <b>annual up front ($600)</b> on the spot. Your first dollar of real revenue!`,d}; } const d=fx({morale:-5,hype:-3}); return {ok:0,tag:'WHIFF',title:'NOT READY',text:`The demo stumbles on a half-built screen. She says "ping me when it's done." A warm lead cooled.`,d}; }},
-          {label:'Stall a week to prep a tight demo', go:()=>{ const d=fx({product:4,hype:-2}); return {ok:1,tag:'PREP',title:'BOUGHT TIME',text:`You buy a week to polish. Risk: warm leads cool fast. Reward: a demo that won't faceplant.`,d}; }},
-        ]},
-      { spr:'📧', title:'EMAIL PROVIDER CLEARS', sub:'Your email-sending application is approved.',
-        text:`Transactional + outreach email is unblocked. A quiet but real win for both the product and the pipeline.`,
-        choices:[
-          {label:'Wire it into reminders + outreach', go:()=>{ S.emailOk=true; const d=fx({product:5,hype:4}); return {ok:1,tag:'UNLOCKED',title:'EMAIL ONLINE 📧',text:`Reminders send, and your warmed domains have a real pipe. Momentum.`,d}; }},
-        ]},
-    ];
-    return pool[Math.floor(R()*pool.length)];
-  },
-  // 8 — the offer
-  { spr:'🏷️', wk:6, title:'DESIGN THE COLD OFFER', sub:'Same list prices — the OFFER does the work.',
-    text:`A stranger won't commit a big setup fee + 6 months to an unknown tool. How you frame the cold offer decides your conversion.`,
-    choices:[
-      {label:'Money-back guarantee + free setup, annual default', go:()=>{ S.offerGood=true; const d=fx({hype:10,morale:2});
-        return {ok:1,tag:'TEXTBOOK',title:'RISK-REVERSAL',text:`Pay-first (no tire-kickers) but zero risk to them, free onboarding, annual prepay = cash up front. This is the smart play.`,d}; }},
-      {label:'Mandatory big setup fee + 6-month lock, cold', go:()=>{ const d=fx({hype:-8});
-        return {ok:0,tag:'CONVERSION KILLER',title:'A WALL OF FRICTION',text:`You just put a big setup + 6-month wall in front of a cheap sub from a brand nobody's heard of. Cold conversion <bad>cratered.</bad>`,d}; }},
-      {label:'Panic-discount everything to rock bottom', go:()=>{ S.cheapBrand=true; const d=fx({morale:-3,hype:3});
-        return {ok:0,tag:'RACE TO BOTTOM',title:'CHEAPENED THE BRAND',text:`You signal "cheap and desperate," torch your margin, and attract bargain-hunters who churn. Move on TERMS, not price.`,d}; }},
-    ]},
-  // 9 — first close
-  { spr:'💳', wk:7, title:'THE FIRST REAL CLOSE', sub:'Time to convert pipeline into paying customers.',
-    text:`You run a focused sales push at your warmest prospects. Whether it lands depends on the machine you built.`,
-    choices:[
-      {label:'Run the push — call, demo, ask for the sale', go:()=>{
-        let score=0; score+= S.product>=60?2:S.product>=45?1:0; score+= S.domainsWarmed?1:0; score+= S.offerGood?2:0; score-= S.leadsBurned?1:0; score-= S.cheapBrand?1:0;
-        const roll=R()*4 + score;
-        if(roll>=4.5){ const n=2+Math.floor(R()*2); S.customers+=n; if(S.churn==null)S.churn=2.5+R()*2; if(!S.firstPaid){S.firstPaid=true;} const d=fx({customers:0,cash:n*600,morale:10,hype:8});
-          return {ok:1,mile:2,tag:'MILESTONE',title:`CLOSED ${n} CUSTOMERS 💳`,text:`Your machine works: warm domains + clean offer + a demo that holds. <b>${n} businesses pay annual up front.</b> First real revenue is REAL.`,d}; }
-        if(roll>=2.5){ S.customers+=1; if(S.churn==null)S.churn=3.5; if(!S.firstPaid)S.firstPaid=true; const d=fx({cash:600,morale:6,hype:3});
-          return {ok:1,mile:2,tag:'FIRST PAID',title:'ONE PAYING CUSTOMER 💳',text:`It's grindy, but one owner signs annual. The very first paying customer — the number that proves the whole thing.`,d}; }
-        const d=fx({morale:-4,hype:-2});
-        return {ok:0,tag:'NEAR MISS',title:'"LET ME THINK ABOUT IT"',text:`The pitch lands soft — ${S.product<60?'a shaky product':'thin pipeline'} shows. No signatures yet. Fix the weak link and try again.`,d}; }},
-      {label:'Don\'t sell yet — keep building, sell when perfect', go:()=>{ const d=fx({product:8,morale:-1});
-        return {ok:0,tag:'STALLING',title:'PERFECTIONISM TAX',text:`The product gets nicer, but "will they pay?" stays unanswered — and that's the only question that matters. The clock burns.`,d}; }},
-    ]},
-  // 10 — fall arrives
-  { spr:'🍂', wk:10, title:'LIFE GETS BUSY', sub:'The season turns — jobs, school, family. Founder hours just HALVED.', season:'FALL',
-    text:`The summer build window is closing. You can't do everything part-time. How do you spend your shrunken hours?`,
-    choices:[
-      {label:'Ruthless focus: protect ONE goal, protect the team', go:()=>{ const d=fx({morale:5,product:6});
-        return {ok:1,tag:'WISE',title:'ONE THING WELL',text:`You drop the side plates and defend a single priority. Less gets done, but it gets done — and nobody burns out.`,d}; }},
-      {label:'Keep all four plates spinning, just slower', go:()=>{ if(S.churn!=null)S.churn+=2; const d=fx({morale:-10,product:3});
-        return {ok:0,tag:'OVEREXTENDED',title:'EVERYONE\'S FRIED',text:`Half-hours across four fronts means everything limps. Morale tanks and <bad>churn creeps up</bad> as support slips.`,d}; }},
-    ]},
-  // 11 — referral gate
-  { spr:'🤝', wk:12, title:'THE REFERRAL QUESTION', sub:'Your big growth plan — but it\'s gated on churn <5%.',
-    text:()=> S.customers>=2 ? `You finally have customers and a churn read of <b>${(S.churn||0).toFixed(1)}%</b>. Do you flip on the referral program?`
-                            : `You wanted to launch referrals… but with <bad>${S.customers} customer(s)</bad> you have no retention proof. The gate won't open.`,
-    choices:()=> S.customers>=2 ? [
-      {label:'Launch the referral program (earned, not bought)', go:()=>{ if((S.churn||9)<5){ S.affiliate=true; const n=1+Math.floor(R()*2); S.customers+=n; const d=fx({customers:0,cash:n*400,hype:15,morale:5}); return {ok:1,mile:3,tag:'MILESTONE',title:'REFERRAL ENGINE LIVE 🤝',text:`Churn's low enough to be honest about. You flip it on; warm referrers bring <b>${n}</b> new closes. The compounding engine starts turning.`,d}; } const d=fx({morale:-6,hype:-4}); return {ok:0,tag:'TOO EARLY',title:'LEAKY BUCKET',text:`Churn's still high — recruiting referrers now just pours new customers into a leaky bucket. You burn goodwill. Fix retention first.`,d}; }},
-      {label:'Hold — prove retention more before recruiting', go:()=>{ const d=fx({morale:2,product:3}); return {ok:1,tag:'PATIENT',title:'RETENTION FIRST',text:`You resist the shiny channel and shore up onboarding instead. Referrals will compound harder on a product that keeps people.`,d}; }},
-    ] : [
-      {label:'Understood — go get more paying customers first', go:()=>{ const d=fx({morale:1}); return {ok:1,tag:'REALITY',title:'GATE STAYS SHUT',text:`No proof, no program. You point the team back at direct sales — exactly the right order of operations.`,d}; }},
+      {label:'Full-court press — outreach + demos + closing', go:()=>{ const base=8+Math.round(S.product/6)+(S.offerGood?10:0)+(S.domainsWarmed?5:0)+(S.firstTester?7:0)-(S.leadsBurned?6:0)-(S.cheapBrand?4:0)+Math.floor(Math.random()*7);
+        const n=Math.max(4,base); S.customers+=n; S.arpu=S.cheapBrand?95:(S.offerGood?175:150); S.churn=clamp(S.churn-(S.offerGood?1:0)+(S.cheapBrand?1.5:0),3,9);
+        const prepay=Math.round(n*S.arpu*5); S.cash+=prepay;
+        return {ok:1,mile:1,tag:'MILESTONE',title:`LAUNCHED — ${n} CUSTOMERS 💳`,text:`Your machine works. <b>${n} businesses</b> sign on (mostly annual, ${money(prepay)} up front). First real revenue — and a company worth scaling.`,d:fx({brand:8,morale:10})};}},
+      {label:'Soft launch — a few hand-picked customers', go:()=>{ const n=3+Math.floor(Math.random()*3); S.customers+=n; S.arpu=160; S.cash+=n*S.arpu*4;
+        return {ok:1,tag:'STEADY',title:`SOFT LAUNCH — ${n} CUSTOMERS`,text:`A careful start with ${n} happy customers. Less scale, but rock-solid references.`,d:fx({morale:5,product:4})};}},
     ]},
 ];
+function afterBeat(){ S.sumIdx++; S.month+=1; if(S.sumIdx>=SUMMER.length){ return enterScaling(); } renderBeat(SUMMER[S.sumIdx]); }
 
-/* ============================ ENGINE ============================ */
-function currentBeat(){ let b=BEATS[idx]; if(typeof b==='function') b=b(); return b; }
-function show(id,on){ document.getElementById(id).style.display = on?'':'none'; }
+/* ===================== PHASE 2 — SCALING (home base + quarters) ===================== */
+function enterScaling(){
+  S.phase='scale'; S.q=0; S.lastGrowth=0.3; if(S.arpu<120)S.arpu=150;
+  showOut({ok:1,mile:1,tag:'NEW CHAPTER',title:'YEAR 1 BEGINS 🏢',
+    text:`Summer's over — you survived with <b>${num(S.customers)} customers</b> and <b>${money(mrr())}/mo</b>. Now the real game: <b>3 years</b> to build an empire. Welcome to your <b>HOME BASE</b> — hire, upgrade, and reinvest between every quarter.<br><br>🎯 Win by <b>selling for ≥ $48M</b> or reaching <b>$5M / month.</b>`},
+    ()=>renderBase());
+}
+const ROLES=[
+  {k:'eng',icon:'👩‍💻',name:'Engineer',base:14000,ds:'+product each quarter, slowly cuts churn'},
+  {k:'sales',icon:'💼',name:'Salesperson',base:12000,ds:'+new customers every quarter'},
+  {k:'support',icon:'🎧',name:'Support Rep',base:9000,ds:'cuts churn, guards morale'},
+  {k:'mkt',icon:'📣',name:'Marketer',base:11000,ds:'+brand & reach (compounds growth)'},
+];
+const hireCost=r=>Math.round(r.base*(1+S.staff[r.k]*0.7));
+const UPG=[
+  {id:'onboarding',icon:'🧭',name:'Guided Onboarding',cost:8000,cat:'🛠️ Product',ds:'-1.0 churn',ap:()=>{S.churn=clamp(S.churn-1,0.6,20);}},
+  {id:'mobile',icon:'📱',name:'Mobile App',cost:26000,cat:'🛠️ Product',ds:'-0.8 churn, +brand',ap:()=>{S.churn=clamp(S.churn-0.8,0.6,20); S.brand=clamp(S.brand+8,0,100);}},
+  {id:'ai',icon:'🤖',name:'AI Assistant',cost:62000,cat:'🛠️ Product',need:'mobile',ds:'-1.5 churn, +arpu',ap:()=>{S.churn=clamp(S.churn-1.5,0.6,20); S.arpu=Math.round(S.arpu*1.14);}},
+  {id:'content',icon:'✍️',name:'Content Engine',cost:12000,cat:'📣 Growth',ds:'+steady growth'},
+  {id:'ads',icon:'📺',name:'Paid Ads',cost:30000,cat:'📣 Growth',ds:'+flat new customers/qtr'},
+  {id:'referral',icon:'🤝',name:'Referral Program',cost:48000,cat:'📣 Growth',need:'content',ds:'+compounding growth'},
+  {id:'automation',icon:'⚙️',name:'Ops Automation',cost:36000,cat:'🚀 Scale',ds:'cuts infra cost, +morale',ap:()=>{S.morale=clamp(S.morale+6,0,100);}},
+  {id:'rnd',icon:'🔬',name:'R&D Lab',cost:85000,cat:'🚀 Scale',need:'ai',ds:'unlocks Enterprise'},
+  {id:'enterprise',icon:'🏢',name:'Enterprise Tier',cost:130000,cat:'🚀 Scale',need:'rnd',ds:'BIG +arpu',ap:()=>{S.arpu=Math.round(S.arpu*1.8);}},
+  {id:'intl',icon:'🌍',name:'Go International',cost:170000,cat:'🚀 Scale',need:'enterprise',ds:'+big growth, +infra',ap:()=>{S.brand=clamp(S.brand+10,0,100);}},
+];
+const owns=id=>!!S.upg[id];
+function growthBonus(){ let b=0; if(owns('content'))b+=.06; if(owns('ads'))b+=.04; if(owns('referral'))b+=.13; if(owns('intl'))b+=.12; return b; }
+function buyUpg(u){ if(owns(u.id)||S.cash<u.cost||(u.need&&!owns(u.need)))return; sfx.buy(); S.cash-=u.cost; S.upg[u.id]=true; if(u.ap)u.ap(); renderBase(); }
+function hire(r){ const c=hireCost(r); if(S.cash<c)return; sfx.buy(); S.cash-=c; S.staff[r.k]++; renderBase(); }
+function raisePrices(){ if(S.arpu<=0)return; sfx.buy(); S.arpu=Math.round(S.arpu*1.15); S.churn=clamp(S.churn+1.3,0.6,20); S.brand=clamp(S.brand-3,0,100); renderBase(); }
 
-function loadBeat(){
-  if(idx>=BEATS.length){ return ending(); }
-  activeBeat = currentBeat();
-  if(activeBeat.season){ S.season=activeBeat.season; }
-  if(activeBeat.wk){ S.week=activeBeat.wk; }
-  document.getElementById('seasonTag').textContent = `${S.season} · WK ${S.week}`;
-  document.getElementById('spr').textContent = activeBeat.spr;
-  document.getElementById('sceneTitle').textContent = activeBeat.title;
-  document.getElementById('sceneSub').textContent = activeBeat.sub||'';
-  document.getElementById('sceneText').innerHTML = typeof activeBeat.text==='function'?activeBeat.text():activeBeat.text;
-  const ch=document.getElementById('choices'); ch.innerHTML='';
-  const choices = typeof activeBeat.choices==='function'?activeBeat.choices():activeBeat.choices;
-  activeBeat._choices=choices;
-  choices.forEach((c,i)=>{
-    const b=document.createElement('button'); b.className='choice';
-    b.innerHTML=`<span class="k">${i+1}</span><span>${c.label}</span>`;
-    b.onclick=()=>choose(i); ch.appendChild(b);
+function renderBase(){
+  screen='base'; const yr=1+Math.floor(S.q/4), qq=1+(S.q%4);
+  let h=`<div class="base-h">🏠 HOME BASE</div><div class="base-sub">Year ${yr} · Quarter ${qq} — reinvest, then run the quarter</div>`;
+  // hires
+  h+=`<div class="shop-cat">👥 HIRE (one-time cost, adds monthly salary)</div><div class="shop-grid">`;
+  ROLES.forEach(r=>{ const c=hireCost(r), cant=S.cash<c;
+    h+=`<div class="item ${cant?'cant':''}" data-hire="${r.k}"><div class="nm">${r.icon} ${r.name} <span style="color:var(--dim)">×${S.staff[r.k]}</span></div><div class="ds">${r.ds}</div><div class="cost">HIRE ${money(c)}</div></div>`; });
+  h+=`</div>`;
+  // upgrades grouped
+  ['🛠️ Product','📣 Growth','🚀 Scale'].forEach(cat=>{
+    h+=`<div class="shop-cat">${cat} UPGRADES</div><div class="shop-grid">`;
+    UPG.filter(u=>u.cat===cat).forEach(u=>{ const owned=owns(u.id), locked=u.need&&!owns(u.need), cant=!owned&&(S.cash<u.cost||locked);
+      h+=`<div class="item ${owned?'owned':cant?'cant':''}" data-upg="${u.id}"><div class="nm">${u.icon} ${u.name}</div><div class="ds">${u.ds}${locked?' 🔒 needs '+UPG.find(x=>x.id===u.need).name:''}</div><div class="cost">${owned?'✅ OWNED':money(u.cost)}</div></div>`; });
+    h+=`</div>`;
   });
-  phase='scene'; show('scene',true); show('outcome',false);
-  renderHUD();
+  // pricing lever
+  h+=`<div class="shop-cat">💵 PRICING</div><div class="shop-grid"><div class="item" data-price="1"><div class="nm">💵 Raise Prices +15%</div><div class="ds">+arpu, +churn, -brand</div><div class="cost">FREE LEVER</div></div></div>`;
+  const tips=['Sales + Marketing compound growth; Support + Product crush churn.','Churn is the silent killer — every % you cut is worth a hire.','Acquisition offers grow with your valuation. Patience can pay — or vanish.','Raising prices prints money but tests loyalty. Earn it with product first.','Cash sitting idle earns nothing. Reinvest aggressively early.'];
+  h+=`<div class="advisor">💡 ${tips[S.q%tips.length]}</div>`;
+  h+=`<button class="btn run" id="runBtn">▶ RUN THE QUARTER ▶</button>`;
+  document.getElementById('base').innerHTML=h;
+  document.querySelectorAll('#base [data-hire]').forEach(el=>el.onclick=()=>hire(ROLES.find(r=>r.k===el.dataset.hire)));
+  document.querySelectorAll('#base [data-upg]').forEach(el=>el.onclick=()=>buyUpg(UPG.find(u=>u.id===el.dataset.upg)));
+  document.querySelectorAll('#base [data-price]').forEach(el=>el.onclick=raisePrices);
+  document.getElementById('runBtn').onclick=runQuarter;
+  showBase(); renderHUD();
 }
 
-function choose(i){
-  if(phase!=='scene') return;
-  sfx.click();
-  const prev={cash:S.cash,customers:S.customers,product:S.product,morale:S.morale};
-  const out = activeBeat._choices[i].go();
-  S.cash=Math.round(S.cash);
-  renderHUD(prev);
-  const card=document.getElementById('outCard'), tag=document.getElementById('outTag');
-  let cls = out.mile!=null && out.tag==='MILESTONE' ? 'mile' : (out.ok?'good':'bad');
-  card.className='out-card '+cls; tag.className='out-tag '+cls;
-  tag.textContent = (cls==='mile'?'★ ':'')+out.tag+(cls==='mile'?' ★':'');
-  document.getElementById('outText').innerHTML = `<div class="scene-title" style="font-size:12px;margin-bottom:8px;color:${cls==='bad'?'var(--red)':cls==='mile'?'var(--gold)':'var(--mint2)'}">${out.title}</div>`+out.text;
-  document.getElementById('deltas').innerHTML = (out.d||[]).join('');
-  show('scene',false); show('outcome',true); phase='outcome';
-  if(cls==='mile') sfx.mile(); else if(out.ok) sfx.good(); else sfx.bad();
-  if(!out.ok){ document.getElementById('frame').animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:220,iterations:1}); }
+function runQuarter(){
+  if(screen!=='base')return; sfx.cash(); const prev=snap(); const before=S.customers;
+  const sat = S.customers>1500 ? Math.max(0.3, 1-(S.customers-1500)/26000) : 1;
+  let g = 0.05 + 0.05*S.staff.sales + 0.035*S.staff.mkt + 0.02*((S.product-50)/10) + S.brand/360 + growthBonus();
+  g = clamp(g,-0.05,1.05)*sat;
+  const flat = Math.round(S.staff.sales*9 + S.brand*1.0 + 6 + (owns('ads')?45:0) + (owns('intl')?60:0));
+  const gained = Math.round(S.customers*g)+flat;
+  let eChurn = clamp(S.churn - S.product*0.025 - S.staff.support*0.5, 0.6, 20);
+  const churned = Math.round(S.customers*eChurn/100*3);
+  S.customers=Math.max(0,S.customers+gained-churned);
+  const sal=S.staff.eng*14000+S.staff.sales*12000+S.staff.support*9000+S.staff.mkt*11000;
+  const infra=Math.round(S.customers*(owns('automation')?1.6:3));
+  const profitMo=mrr()-sal-infra; S.cash=Math.round(S.cash+profitMo*3);
+  S.product=clamp(S.product+S.staff.eng*1.3-0.4,0,100);
+  S.brand=clamp(S.brand+S.staff.mkt*1.4-1,0,100);
+  const cap=1+totalStaff()*0.95; S.morale=clamp(S.morale+(S.customers/(cap*240)>1?-6:3),0,100);
+  S.lastGrowth=before>0?(S.customers-before)/before:0.3;
+  S.q++;
+  // fail checks
+  if(S.cash<-30000) return ending('bankrupt');
+  if(S.morale<=0) return ending('burnout');
+  if(mrr()>=5000000) return ending('empire');
+  // quarter report
+  const rep=[]; rep.push(`<div class="delta up">🧑 +${num(gained)} new</div>`); rep.push(`<div class="delta down">📉 -${num(churned)} churned</div>`);
+  rep.push(`<div class="delta ${profitMo>=0?'up':'down'}">💰 ${money(profitMo)}/mo ${profitMo>=0?'profit':'burn'}</div>`);
+  const net=S.customers-before;
+  showOut({ok:profitMo>=0||net>0, tag:'QUARTER REPORT', title:`Q${1+((S.q-1)%4)} · YEAR ${1+Math.floor((S.q-1)/4)}`,
+    text:`Net <b class="${net>=0?'g':'bad'}">${net>=0?'+':''}${num(net)}</b> customers → <b>${num(S.customers)}</b> total. MRR <b>${money(mrr())}/mo</b>, valuation <b>${money(valuation())}</b>.`,
+    d:rep}, ()=>{ if(S.q>=12) return finalReckoning(); presentEvent(); });
 }
 
-function nextBeat(){
-  if(phase!=='outcome') return;
-  if(S.morale<=0){ return ending('burnout'); }
-  if(S.cash<0){ return ending('bankrupt'); }
-  idx++;
-  loadBeat();
-}
-
-/* ============================ ENDING ============================ */
-function ending(fail){
-  phase='ending'; sfx.end();
-  document.getElementById('ending').classList.remove('hidden');
-  const g=document.getElementById('grade'), t=document.getElementById('endTitle'),
-        sc=document.getElementById('endScore'), rv=document.getElementById('endReveal'), ls=document.getElementById('endLesson');
-  let grade,title,color,lesson;
-
-  if(fail==='burnout'){ grade='☠'; title='TEAM BURNOUT'; color='var(--red)';
-    lesson='LESSON: Four fried founders ship nothing. Morale is a resource — you spent it all and the company stalled.'; }
-  else if(fail==='bankrupt'){ grade='💸'; title='OUT OF CASH'; color='var(--red)';
-    lesson='LESSON: You found the one way to lose money at near-zero burn — by spending it. Costs were never the enemy; you made them one.'; }
-  else {
-    let pts = S.product*0.5 + S.customers*14 + S.morale*0.4 + (S.firstPaid?20:0) + (S.firstTester?10:0) + (S.oaSigned?8:0) + (S.affiliate?12:0) - S.scope*3 - (S.leadsBurned?10:0) - (S.cheapBrand?8:0);
-    if(pts>=110 && S.firstPaid && S.customers>=3){ grade='★★★'; title='RAMEN PROFITABLE'; color='var(--gold)';
-      lesson='LESSON: Foundations → proof → focus. You fixed the spine, sold direct, signed the agreement, and earned the referral engine. This is the run.'; }
-    else if(pts>=70 && S.firstPaid){ grade='★★'; title='SHIPPED + PAYING'; color='var(--mint2)';
-      lesson='LESSON: You shipped a working product and proved someone will pay. That single fact beats a year of planning. Now go get ten more.'; }
-    else if(pts>=45){ grade='★'; title='SHIPPED, BUT SHAKY'; color='var(--mint)';
-      lesson='LESSON: Real progress, but the validation is thin. Tighten retention and close more before you touch the growth channels.'; }
-    else { grade='▢'; title='STILL MID-REBUILD'; color='var(--dim)';
-      lesson='LESSON: The summer slipped through scope-drift and stalling. Pick ONE critical path next time and refuse every "we should also…".'; }
+/* ===================== SCALING EVENTS ===================== */
+const EVENTS=[
+  {id:'star',cond:()=>S.cash>40000, spr:'🌟', title:'A STAR ENGINEER', sub:'A 10x builder will join — for a price.',
+   text:()=>`A legendary engineer wants in, but wants <b>${money(45000)}</b> in signing + equity. Worth it?`,
+   choices:[ {label:'Pay up — hire the savant', go:()=>{S.staff.eng++; S.equitySold+=0.02; return {ok:1,tag:'BIG HIRE',title:'SHIPPED!',text:`Product velocity doubles overnight.`,d:fx({cash:-45000,product:14})};}},
+     {label:'Pass — too rich for us', go:()=>({ok:1,tag:'FRUGAL',title:'STAYED LEAN',text:`You keep the cash and the cap table. Slower, but yours.`,d:fx({morale:-2})})} ]},
+  {id:'whale',cond:()=>S.product>=55, spr:'🐋', title:'ENTERPRISE WHALE RFP', sub:'A 200-location chain is shopping.',
+   text:()=>`A huge prospect issues an RFP. Landing it is a massive contract — if your product holds up.`,
+   choices:[ {label:'Go all-in on the pitch', go:()=>{ if(S.product>=68){ const n=Math.round(40+S.product); S.customers+=n; S.arpu=Math.round(S.arpu*1.12); return {ok:1,mile:1,tag:'MILESTONE',title:'WHALE LANDED 🐋',text:`You win the contract — <b>+${num(n)} seats</b> and your ARPU jumps.`,d:fx({brand:10,morale:8})};} return {ok:0,tag:'LOST IT',title:'NOT ENTERPRISE-READY',text:`They grill your security & uptime and walk. Sting.`,d:fx({morale:-5,brand:-3})};}},
+     {label:'Decline — stay focused on SMB', go:()=>({ok:1,tag:'FOCUS',title:'KNOW YOUR LANE',text:`No enterprise rabbit hole. The SMB machine keeps humming.`,d:fx({morale:2})})} ]},
+  {id:'competitor', spr:'⚔️', title:'A RIVAL UNDERCUTS YOU', sub:'A funded competitor slashes prices 40%.',
+   text:()=>`Your inbox fills with "why are you more expensive?" How do you respond?`,
+   choices:[ {label:'Match their price', go:()=>{S.arpu=Math.round(S.arpu*0.78); return {ok:0,tag:'PRICE WAR',title:'RACE DOWN',text:`Churn stops, but you torched your margin and signaled weakness.`,d:fx({arpu:0,brand:-2})};}},
+     {label:'Out-build them on quality', go:()=>{ if(S.product>=60) return {ok:1,tag:'MOAT',title:'WON ON VALUE',text:`You lean into depth they can't match. Customers stay; some of theirs defect to you.`,d:fx({customers:Math.round(S.customers*0.06)+10,brand:5})}; return {ok:0,tag:'OUTGUNNED',title:'NOT YET',text:`Your product isn't differentiated enough to justify the gap. You bleed a few.`,d:fx({customers:-Math.round(S.customers*0.05)-3,morale:-3})};}},
+     {label:'Ignore it and keep building', go:()=>({ok:0,tag:'GAMBLE',title:'HELD THE LINE',text:`You don't flinch. A chunk of price-sensitive customers leaves anyway.`,d:fx({customers:-Math.round(S.customers*0.04)-4})})} ]},
+  {id:'churn',cond:()=>S.churn>5, spr:'🪣', title:'CHURN INVESTIGATION', sub:'Customers are leaking faster than you like.',
+   text:()=>`Your churn is <b class="bad">${S.churn.toFixed(1)}%</b>/mo. The board wants a fix.`,
+   choices:[ {label:'Invest in product + support to fix root cause', go:()=>({ok:1,tag:'RETENTION',title:'PLUGGED THE LEAK',text:`You fix onboarding gaps and add white-glove support. Churn drops.`,d:fx({cash:-20000,churn:-2.2,morale:2})})},
+     {label:'Throw discounts at people leaving', go:()=>({ok:0,tag:'BAND-AID',title:'BRIBING THE EXIT',text:`Saves a few this quarter, trains everyone to threaten leaving. ARPU dips.`,d:fx({arpu:-Math.round(S.arpu*0.06),churn:-0.6})})} ]},
+  {id:'viral', spr:'📈', title:'A VIRAL MOMENT', sub:'A creator features you to 2M followers.',
+   text:()=>`Sudden spotlight. Do you pour fuel on it?`,
+   choices:[ {label:'Blitz ads to ride the wave', go:()=>({ok:1,tag:'MOMENTUM',title:'CAUGHT THE WAVE',text:`You amplify the moment into real signups.`,d:fx({cash:-25000,customers:Math.round(S.customers*0.12)+30,brand:14})})},
+     {label:'Let it ride for free', go:()=>({ok:1,tag:'THRIFTY',title:'FREE BUMP',text:`A nice organic spike — smaller, but it cost nothing.`,d:fx({customers:Math.round(S.customers*0.04)+8,brand:6})})} ]},
+  {id:'burnoutkey',cond:()=>S.morale<55, spr:'🔥', title:'A KEY PERSON IS FRIED', sub:'Your best operator is one bad week from quitting.',
+   text:()=>`Burnout is spreading. What do you do?`,
+   choices:[ {label:'Give raises + real PTO (costs cash)', go:()=>({ok:1,tag:'CARE',title:'TEAM FIRST',text:`Morale rebounds. People remember who had their back.`,d:fx({cash:-18000,morale:18})})},
+     {label:'Push through the crunch', go:()=>({ok:0,tag:'GRIND',title:'SOMETHING BREAKS',text:`You ship, but a key player checks out. Output drops.`,d:fx({morale:-10,product:-5})})} ]},
+  {id:'security',cond:()=>S.customers>200, spr:'🔓', title:'SECURITY INCIDENT', sub:'A researcher reports a data leak.',
+   text:()=>`Sensitive data was exposed. The clock is ticking before it goes public.`,
+   choices:[ {label:'Disclose, fix fast, notify customers', go:()=>({ok:1,tag:'INTEGRITY',title:'HANDLED RIGHT',text:`Painful and costly, but trust survives — even strengthens.`,d:fx({cash:-30000,brand:3,churn:0.3})})},
+     {label:'Quietly patch and say nothing', go:()=>({ok:0,tag:'COVER-UP',title:'IT LEAKS ANYWAY',text:`It gets out. The cover-up hurts worse than the bug.`,d:fx({brand:-14,churn:2,customers:-Math.round(S.customers*0.05)})})} ]},
+  {id:'acquihire',cond:()=>S.customers<400&&S.q>=4, spr:'🤲', title:'ACQUIHIRE OFFER', sub:'A big co wants your team — not your product.',
+   text:()=>`They offer <b>${money(2200000)}</b> to absorb the team and shut the product down. Early, safe money.`,
+   choices:[ {label:'Take the safe exit', go:()=>ending('acquihire',2200000)},
+     {label:'No — we\'re just getting started', go:()=>({ok:1,tag:'CONVICTION',title:'BET ON YOURSELF',text:`You wave off $2.2M. Now go prove it was the right call.`,d:fx({morale:6})})} ]},
+  {id:'partner',cond:()=>S.product>=60, spr:'🔗', title:'PLATFORM INTEGRATION', sub:'A giant offers an official integration.',
+   text:()=>`Engineering effort now for a steady channel later. Build it?`,
+   choices:[ {label:'Build the integration', go:()=>({ok:1,tag:'DISTRIBUTION',title:'WIRED IN',text:`Listed in their marketplace — a durable new top-of-funnel.`,d:fx({cash:-15000,brand:9,product:4})})},
+     {label:'Skip — protect the roadmap', go:()=>({ok:1,tag:'FOCUSED',title:'ROADMAP INTACT',text:`You keep the team on core. No new channel, no distraction.`,d:fx({})})} ]},
+  {id:'pricingpower',cond:()=>S.product>=70&&S.churn<5, spr:'💎', title:'PRICING POWER', sub:'Customers love you. Time to charge more?',
+   text:()=>`Low churn + high love = room to raise prices. Pull the lever?`,
+   choices:[ {label:'Raise prices 20% across the board', go:()=>({ok:1,tag:'MARGIN',title:'WORTH IT',text:`A few grumble, almost none leave. Pure margin.`,d:fx({arpu:Math.round(S.arpu*0.2),churn:0.6})})},
+     {label:'Hold prices, build goodwill', go:()=>({ok:1,tag:'LONG GAME',title:'GOODWILL BANKED',text:`You leave money on the table on purpose. Loyalty deepens.`,d:fx({brand:5,churn:-0.4})})} ]},
+];
+function presentEvent(){
+  // acquisition offer logic
+  const val=valuation();
+  const canOffer = val>=4000000 && (S.q-S.lastOfferQ)>=2;
+  if(canOffer && (val>=42000000 || Math.random()<0.5)){
+    S.lastOfferQ=S.q; const offer=Math.round(val*(0.85+Math.random()*0.55)); S.peakOffer=Math.max(S.peakOffer,offer);
+    const payout=Math.round(offer*(1-S.equitySold));
+    return renderBeat({ spr:'💰', title:'ACQUISITION OFFER', sub:'A buyer slides a term sheet across the table.',
+      text:`An acquirer offers <b class="g">${money(offer)}</b> for the whole company.${S.equitySold>0?` After your ${Math.round(S.equitySold*100)}% sold to investors, you'd net <b>${money(payout)}</b>.`:''} ${offer>=48000000?'<br><br>🎯 This <b class="g">clears your $48M goal.</b>':'<br><br>It\'s below your $48M dream — take it, or bet on more?'}`,
+      choices:[ {label:`Accept — sell for ${money(offer)}`, go:()=>offer>=48000000?ending('exit',offer):ending('soldcheap',offer)},
+        {label:'Reject — keep scaling', go:()=>({ok:1,tag:'ALL IN',title:'WALKED AWAY',text:`You bet the offer will be bigger next time. It might not be.`,d:fx({morale:4}),_next:()=>renderBase()})} ]});
   }
-  g.textContent=grade; g.style.color=color; t.textContent=title; t.style.color=color;
-  sc.innerHTML = `📅 Reached <b>${S.season} · Week ${S.week}</b><br>
-    🛠️ Product ${S.product}% &nbsp; 🧑 Customers ${S.customers} ($${mrr()}/mo) &nbsp; 💰 $${S.cash}<br>
-    ⚡ Morale ${S.morale} &nbsp; 🌀 Scope-drift ${S.scope}/10 &nbsp; 📉 Churn ${S.churn==null?'—':S.churn.toFixed(1)+'%'}<br>
-    ${S.firstTester?'✅ First tester ':'▢ No tester '} ${S.firstPaid?'· ✅ First paid ':'· ▢ No paying customer '} ${S.oaSigned?'· ✅ Agreement signed':'· ⚠ Agreement UNSIGNED'}`;
-  rv.innerHTML = `<span style="color:var(--gold)">FOG LIFTS:</span> the dice this run were set to <b>true conversion ${ (fail?0.6:(0.5+ (S.domainsWarmed?0.4:0) + (S.offerGood?0.4:0) - (S.leadsBurned?0.3:0))).toFixed(1) }%</b> and <b>true churn ${ (fail? 6 : (S.churn||5)).toFixed(1) }%</b> — exactly the kind of numbers only a real send would reveal.`;
-  ls.textContent=lesson;
+  // VC offer (occasional, if not over-diluted)
+  if(!S.vcTaken && S.equitySold<0.3 && S.q>=2 && S.lastGrowth>0.25 && Math.random()<0.3){
+    const raise=S.cash<60000?3000000:6000000; const eq=0.18;
+    return renderBeat({ spr:'🏦', title:'VC TERM SHEET', sub:'Rocket fuel — for a slice of the company.',
+      text:`A fund offers <b>${money(raise)}</b> for <b>${Math.round(eq*100)}%</b>. Cash to grow fast — but a smaller exit payout, and a board to answer to.`,
+      choices:[ {label:`Take ${money(raise)} for ${Math.round(eq*100)}%`, go:()=>{S.vcTaken=true; S.equitySold+=eq; return {ok:1,tag:'FUNDED',title:'WIRED IN',text:`War chest secured. Now you HAVE to grow into it.`,d:fx({cash:raise,morale:3}),_next:()=>renderBase()};}},
+        {label:'Stay bootstrapped', go:()=>({ok:1,tag:'INDEPENDENT',title:'NO MASTERS',text:`100% yours. Every dollar of the exit is too.`,d:fx({morale:4}),_next:()=>renderBase()})} ]});
+  }
+  // operational event
+  const pool=EVENTS.filter(e=>!e.cond||e.cond());
+  const e = pool.length? pool[Math.floor(Math.random()*pool.length)] : null;
+  if(!e){ return renderBase(); }
+  const b={...e}; const baseChoices=typeof e.choices==='function'?e.choices():e.choices;
+  b.choices=baseChoices.map(c=>({label:c.label, go:()=>{ const out=c.go(); if(out&&!out._next)out._next=()=>renderBase(); return out; }}));
+  renderBeat(b);
 }
 
-/* ============================ CONTROL ============================ */
-function startGame(){
-  ac();
+/* ===================== ENDINGS ===================== */
+function finalReckoning(){
+  const v=valuation();
+  if(v>=200000000) return ending('ipo',v);
+  if(v>=48000000) return ending('whaleheld',v);
+  if(mrr()>=300000) return ending('lifestyle',v);
+  return ending('flatlined',v);
+}
+function ending(type,amount){
+  screen='ending'; sfx.end();
   document.getElementById('title').classList.add('hidden');
-  S={...START}; idx=0; renderHUD(); loadBeat();
-}
-function restart(){
-  document.getElementById('ending').classList.add('hidden');
-  S={...START}; idx=0; phase='title';
-  document.getElementById('title').classList.remove('hidden');
-  renderHUD();
+  ['scene','base','outwrap'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  const E=document.getElementById('ending'); E.classList.remove('hidden');
+  let grade,title,color,lesson;
+  const payout=amount?Math.round(amount*(1-S.equitySold)):0;
+  switch(type){
+    case 'exit': grade='★★★'; color='var(--gold)'; title='THE $48M+ EXIT'; lesson='LESSON: You built something real and sold at the top. Foundations → focus → leverage. Textbook.'; break;
+    case 'empire': grade='★★★'; color='var(--gold)'; title='EMPIRE — $5M / MONTH'; lesson='LESSON: You said no to every buyer and built a juggernaut. $60M+ ARR. Legendary run.'; break;
+    case 'ipo': grade='★★★'; color='var(--mint2)'; title='YOU\'RE GOING PUBLIC'; lesson='LESSON: Three years, no exit taken, a nine-figure company. The bell is yours to ring.'; break;
+    case 'whaleheld': grade='★★'; color='var(--mint2)'; title='ACQUISITION-READY'; lesson='LESSON: You cleared the $48M valuation but held to the buzzer. Sell next time the term sheet appears.'; break;
+    case 'soldcheap': grade='★★'; color='var(--mint)'; title='A REAL EXIT'; lesson='LESSON: A life-changing sale — but you took the first decent offer. Patience might have doubled it.'; break;
+    case 'acquihire': grade='★'; color='var(--mint)'; title='ACQUIHIRED'; lesson='LESSON: Safe money, soft landing — but the product died. Sometimes that\'s the smart call; sometimes it\'s nerves.'; break;
+    case 'lifestyle': grade='★'; color='var(--mint)'; title='SOLID BUSINESS'; lesson='LESSON: Profitable and real, just not a rocket. Scale the growth engine harder next run.'; break;
+    case 'flatlined': grade='▢'; color='var(--dim)'; title='IT FLATLINED'; lesson='LESSON: You survived but never found the growth gear. Reinvest earlier and harder into sales + marketing.'; break;
+    case 'bankrupt': grade='💸'; color='var(--red)'; title='OUT OF CASH'; lesson='LESSON: You out-spent your revenue. Hires and upgrades are bets — size them to your runway.'; break;
+    case 'burnout': grade='☠'; color='var(--red)'; title='THE TEAM BURNED OUT'; lesson='LESSON: You scaled the customers, not the team. Morale is the resource that builds all the others.'; break;
+  }
+  document.getElementById('grade').textContent=grade; document.getElementById('grade').style.color=color;
+  const t=document.getElementById('endTitle'); t.textContent=title; t.style.color=color;
+  let money_line = amount? `<br>💰 ${type==='acquihire'?'Sold for':'Sale price'} <b>${money(amount)}</b>${S.equitySold>0?` → your cut <b>${money(payout)}</b> (after ${Math.round(S.equitySold*100)}% sold)`:''}`:'';
+  document.getElementById('endScore').innerHTML =
+    `Reached <b>Year ${1+Math.floor(S.q/4)} · Q${1+(S.q%4)}</b>${money_line}<br>
+     🧑 ${num(S.customers)} customers · 📈 ${money(mrr())}/mo · 🏷️ ${money(valuation())} valuation<br>
+     🛠️ Product ${S.product}% · 📉 Churn ${S.churn.toFixed(1)}% · 👥 ${totalStaff()} staff · ⚡ Morale ${S.morale}`;
+  document.getElementById('endLesson').textContent=lesson;
 }
 
-renderHUD();
+/* ===================== CONTROL ===================== */
+function startGame(){ ac(); S=START(); screen='scene'; document.getElementById('title').classList.add('hidden'); document.getElementById('ending').classList.add('hidden'); renderBeat(SUMMER[0]); }
+function restart(){ S=START(); screen='title'; document.getElementById('ending').classList.add('hidden'); ['base','outwrap'].forEach(id=>document.getElementById(id).classList.add('hidden')); document.getElementById('scene').classList.remove('hidden'); document.getElementById('scene').innerHTML=''; document.getElementById('title').classList.remove('hidden'); renderHUD(); }
+function runForward(){ if(screen!=='outcome')return; const f=fwd; fwd=null; sfx.click(); if(f)f(); }
 
-document.getElementById('title').addEventListener('click', startGame);
-document.addEventListener('keydown', e=>{
-  if(phase==='title' && (e.key===' '||e.key==='Enter')){ startGame(); }
-  else if(phase==='scene' && ['1','2','3','4'].includes(e.key)){ const n=+e.key-1; if(activeBeat._choices[n]) choose(n); }
-  else if(phase==='outcome' && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); nextBeat(); }
+document.getElementById('fwdBtn').onclick=runForward;
+document.getElementById('title').onclick=startGame;
+document.getElementById('againBtn').onclick=restart;
+document.getElementById('restartBtn').onclick=restart;
+document.getElementById('sndBtn').onclick=()=>{ soundOn=!soundOn; document.getElementById('sndBtn').textContent='🔊 '+(soundOn?'ON':'OFF'); if(soundOn){ac();sfx.click();} };
+document.addEventListener('keydown',e=>{
+  if(screen==='title'&&(e.key===' '||e.key==='Enter')) startGame();
+  else if(screen==='scene'&&['1','2','3','4'].includes(e.key)){ const el=document.querySelector(`#scene .choice[data-i="${+e.key-1}"]`); if(el)el.click(); }
+  else if(screen==='outcome'&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); runForward(); }
 });
+renderHUD();
 </script>
 </body>
 </html>
